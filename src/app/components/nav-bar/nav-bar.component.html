@@ -1,0 +1,30 @@
+<div class="flex flex-col fixed top-0 left-0 h-screen bg-sky-700 text-white w-[2.5rem] md:w-[4.5rem]">
+
+    <!-- Imagen -->
+    <div class="flex flex-row p-4">
+        <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-[400px] mx-auto" alt="">
+    </div>
+
+    @for (seccion of seccionesPagina; track seccion) {
+      <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
+        <div [innerHTML]="seccion.svg"></div>
+        <span class=" md:block text-sm flex flex-col items-center justify-center">{{seccion.nombre}}</span>
+      </div>
+    }
+    @if(rol == "Administrador"){
+      @for (seccion of seccionesAdmin; track seccion) {
+        <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
+          <div [innerHTML]="seccion.svg"></div>
+          <span class=" md:block text-sm flex flex-col items-center justify-center">{{seccion.nombre}}</span>
+        </div>
+      }
+    }
+
+    <!-- Botón de cerrar sesión abajo del todo -->
+    <a href="/logout" class="p-4 hover:bg-sky-800 mt-auto flex justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+        </svg>
+    </a>
+
+</div>

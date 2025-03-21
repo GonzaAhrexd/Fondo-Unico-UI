@@ -1,0 +1,16 @@
+<h1 class="text-2xl">Bancos</h1>
+
+<div class="flex flex-row items-center justify-center">
+    <div (click)="modoAgregar = true" class="cursor-pointer bg-sky-700 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg w-[4%] flex flex-row items-center justify-center mr-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+      
+    </div>
+</div>
+@if(modoAgregar){
+    <app-agregar-bancos (showAddBanco)="modoAgregar=false"/>
+}@else {  
+  <h1 class="text-2xl">Lista de Bancos</h1>
+  <BancosTable />  
+}

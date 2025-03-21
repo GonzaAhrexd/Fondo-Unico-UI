@@ -1,0 +1,16 @@
+<NavBar />
+
+<div class="p-10 w-full">
+    <h1 class="text-4xl">Campos del sistema  </h1>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        @for(seccion of seccionesCampos; track seccion){
+            <CardActions [texto]="seccion.texto" (opcion)="getClickedSection($event)"/>
+        }
+    </div>
+
+
+    @if(seccion == "Bancos"){
+        <app-bancos />
+    }
+                                  
+    </div>
