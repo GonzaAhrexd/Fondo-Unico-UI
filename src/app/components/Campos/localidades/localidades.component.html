@@ -1,4 +1,4 @@
-<h1 class="text-2xl">Bancos</h1>
+<h1 class="text-2xl">Localidades</h1>
 
 <div class="flex flex-row items-center justify-center">
     <div (click)="modoAgregar = true" class="cursor-pointer bg-sky-700 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg flex flex-row items-center justify-center mr-2">
@@ -9,8 +9,8 @@
     </div>
 </div>
 @if(modoAgregar){
-    <app-agregar-bancos (showAddBanco)="modoAgregar=false"/>
+    <app-agregar-localidades (showAddLocalidades)="modoAgregar=false"/>
 }@else {  
-  <h1 class="text-2xl">Lista de Bancos</h1>
-  <BancosTable />  
+  <h1 class="text-2xl">Lista de Localidades</h1>
+  <LocalidadesTable />  
 }

@@ -4,11 +4,15 @@ import { UserService } from '../../api/user.service';
 import { Router } from '@angular/router';
 import { CardActionsComponent } from '../../components/card-actions/card-actions.component';
 import { BancosComponent } from '../../components/Campos/bancos/bancos.component';
+import { FormulariosComponent } from "../../components/Campos/formularios/formularios.component";
+import { LocalidadesComponent } from '../../components/Campos/localidades/localidades.component';
+import { UnidadesComponent } from '../../components/Campos/unidades/unidades.component';
 @Component({
   selector: 'app-editar-campos',
-  imports: [NavBarComponent, CardActionsComponent, BancosComponent],
+  imports: [NavBarComponent, CardActionsComponent, BancosComponent, FormulariosComponent, LocalidadesComponent, UnidadesComponent], 
   templateUrl: './editar-campos.component.html',
 })
+
 export class EditarCamposComponent {
 
 
