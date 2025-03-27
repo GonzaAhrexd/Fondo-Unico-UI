@@ -1,23 +1,25 @@
-
+// Angular
 import { Component } from '@angular/core';
-import { getUnidades } from '../../api/unidades.service';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
-import { buscarEntrega, deleteEntrega, buscarEntregaPorNro } from '../../api/entregas.service';
-import { TableComponentEntrega } from './table/table.component'
-import { ColumnDef } from '@tanstack/angular-table';
+// Librerías 
 import Swal from 'sweetalert2';
-import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import { Workbook } from 'exceljs';
+import { ColumnDef } from '@tanstack/angular-table';
+// Servicios
+import { getUnidades } from '../../api/unidades.service';
 import { UserService } from '../../api/user.service';
+import { buscarEntrega, deleteEntrega, buscarEntregaPorNro } from '../../api/entregas.service';
+// Componentes
+import { TableComponentEntrega } from './table/table.component'
 
+// Tipo
 type Unidad = {
   id: number,
   unidad: string,
 }
 
-
 // Definimos columnas por defecto
-
 @Component({
   selector: 'app-buscar-entregas',
   standalone: true,
