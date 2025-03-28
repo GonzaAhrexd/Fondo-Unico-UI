@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../api/user.service';
 import { RouterLink, Router } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
