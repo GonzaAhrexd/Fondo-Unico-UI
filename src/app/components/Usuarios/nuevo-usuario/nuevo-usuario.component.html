@@ -1,0 +1,34 @@
+<form [formGroup]="formulario" >
+    <div class="flex flex-col w-full">
+        <span class="flex font-medium ml-4"> DNI </span>
+        <input formControlName="DNI" id="DNI" type="text"
+        class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+    </div>
+    
+    <div class="flex flex-col w-full">
+        <span class="flex font-medium ml-4"> Rol </span>
+    <select formControlName="Rol" id="Rol"
+        class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
+        <option value="0">Selecciona una opción</option>
+        @for (rol of opcionesRol; track rol.texto) {
+        <option value="{{rol.texto}}">{{ rol.texto }}</option>
+        }
+    </select>
+</div>
+
+<div class="flex flex-col w-full">
+    <span class="flex font-medium ml-4"> Tipo de usuario </span>
+<select formControlName="TipoUsuario" id="tipoUsuario"
+    class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
+    <option value="0">Selecciona una opción</option>
+    @for (tipo of opcionesTipoUsuario; track tipo.texto) {
+    <option value="{{tipo.texto}}">{{ tipo.texto }}</option>
+    }
+</select>
+</div>
+<div class="w-full flex flex-col items-center justify-center">
+    <button (click)="agregarUsuario()" class="bg-sky-900 hover:bg-sky-950 text-white font-bold py-2 px-4 rounded m-4">Agregar</button>
+</div>
+
+
+</form>
