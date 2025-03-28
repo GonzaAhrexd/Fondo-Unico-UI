@@ -6,8 +6,7 @@
       <span class="flex font-medium ml-4"> Fecha </span>
       <input formControlName="Fecha" id="Fecha" type="date"
         class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />         
-      <span class="flex font-medium ml-4"> Unidad </span>
- 
+      <span class="flex font-medium ml-4"> Unidad </span> 
       <div class="w-full">
         <!-- Input de búsqueda -->
         <input
@@ -18,7 +17,6 @@
           class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2 w-full"
           placeholder="Busca una opción..."
         />
-      
         <!-- Lista de opciones -->
          @if(mostrarOpciones){  
            <ul
@@ -43,8 +41,8 @@
       <ng-container formArrayName="renglonesEntregas" class="flex flex-col items-center justify-center w-full">
         <div class="bg-slate-300 rounded-lg flex flex-col items-center justify-center w-full overflow-hidden "> 
           @for (renglon of renglonesEntregas.controls; track renglonesEntregas; let i = $index) {
-            <div [formGroupName]="i" class="grid grid-cols-6 items-center justify-center w-full ">
-            <p class="text-xl font-bold ml-4 flex flex-row items-center" >
+            <div [formGroupName]="i" class="grid grid-cols-6 grid-cols-[40px_auto_auto_auto_auto_40px] items-center justify-center w-full ">
+            <p class="text-xl font-bold ml-4 flex flex-row items-center " >
               {{i + 1}}. 
               @if(renglon.hasError('hastaMenorQueDesde')) {
                 <div class="text-red-500" (mouseenter)="showAdvertencia = true" (mouseleave)="showAdvertencia=false"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -59,7 +57,7 @@
               }
             </p> 
             <select formControlName="TipoFormulario" id="TipoFormulario"
-                class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm  pl-2">
+                class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full pl-2">
                 <option value="0">Selecciona un tipo de formulario</option>
                 @for (form of data; track form.id) {
                   <option value="{{form.formulario}}">{{form.formulario}}</option>

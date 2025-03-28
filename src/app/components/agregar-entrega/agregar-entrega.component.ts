@@ -101,8 +101,10 @@ export class AgregarEntregaComponent implements OnInit {
     });
   }
 
+
   // Función para filtrar las opciones
   filtrarOpciones() {
+
     const busquedaNormalizada = this.quitarTildes(this.form.value.Unidad.trim().toLowerCase());
 
 

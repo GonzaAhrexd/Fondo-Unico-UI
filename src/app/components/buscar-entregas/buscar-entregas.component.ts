@@ -50,53 +50,64 @@ export class BuscarEntregasComponent {
     }
   ]
 
+  // Variables
 
   unidades: Unidad[] = []
   listaEntregas: any = []
+  isEmpty = true
+  busqueda: string = ''; // Variable para almacenar el texto ingresado en el input
+  mostrarOpciones: boolean = false // Variable para mostrar/ocultar las opciones
+  opcionesFiltradas: Unidad[] = this.unidades; // Inicialmente mostrar todas las opciones
+  data: any = []; // Variable para almacenar los formularios
 
 
+  // Formulario
   buscarEntregasForm: FormGroup = new FormGroup({
     NroEntrega: new FormControl('',),
-    Unidad: new FormControl('0', [Validators.required]),
+    Unidad: new FormControl('', [Validators.required]),
     Desde: new FormControl('', [Validators.required]),
     Hasta: new FormControl('', [Validators.required]),
   });
 
 
 
-
+  // Funciones
+  // Evita que se ingresen números negativos
   preventNegative(event: KeyboardEvent) {
     if (event.key === '-') {
       event.preventDefault();
     }
   }
 
-
+  // Evita que se haga scroll en el input
   preventScroll(event: WheelEvent): void {
     event.preventDefault();
   }
 
-
+// Buscar entre las unidades
   fetchUnidades() {
     getUnidades().then((data) => {
       this.unidades = data
+      this.opcionesFiltradas = this.unidades;
+
       // Agrega la opción listar todo
       this.unidades.unshift({ id: 0, unidad: 'Listar todo' });
     })
   }
 
+  // Inicializar
   ngOnInit() {
     this.fetchUnidades()
     this.buscarEntregasForm.patchValue({
       Unidad: "Listar todo"
     })
-   
 
     this.buscarEntregasForm.get('NroEntrega')?.valueChanges.subscribe(value => {
       this.actualizarValidaciones(value);
     });
   }
 
+  // Actualizar validaciones
   actualizarValidaciones(nroEntrega: string) {
     const desdeControl = this.buscarEntregasForm.get('Desde');
     const hastaControl = this.buscarEntregasForm.get('Hasta');
@@ -115,17 +126,42 @@ export class BuscarEntregasComponent {
     desdeControl?.updateValueAndValidity();
     hastaControl?.updateValueAndValidity();
   }
+  filtrarOpciones() {
+    // console.log(this.buscarEntregasForm.value.Unidad)
+
+    const busquedaNormalizada = this.quitarTildes(this.buscarEntregasForm.value.Unidad.trim().toLowerCase());
 
 
-  isEmpty = true
+    if (busquedaNormalizada === '') {
+      this.opcionesFiltradas = [...this.unidades]; // Mostrar todas las opciones
+    } else {
+      // Filtrar las opciones basadas en el valor ingresado
+      this.opcionesFiltradas = this.unidades.filter(unidad =>
+        this.quitarTildes(unidad.unidad.toLowerCase()).includes(busquedaNormalizada)
+      );
+    }
 
+    this.mostrarOpciones = true;
+  }
+  // Función para quitar tildes
+  quitarTildes(texto: string): string {
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
 
+  seleccionar(opcion: string) {
+
+    // Asignar la opción seleccionada al campo de búsqueda
+    this.buscarEntregasForm.get('Unidad')?.setValue(opcion);
+    this.mostrarOpciones = false;
+  
+  }
+
+  // Función para buscar entregas
   async fetchEntregas() {
     try {
 
       const formData = this.buscarEntregasForm.getRawValue(); // getRawValue() incluye los campos deshabilitados 
 
-      console.log(formData)
 
       this.listaEntregas = []
       this.isEmpty = true
@@ -178,6 +214,8 @@ export class BuscarEntregasComponent {
 
   }
 
+  // Excel
+
   imprimir() {
 
     // @ts-ignore
@@ -208,7 +246,7 @@ export class BuscarEntregasComponent {
 
     worksheet.mergeCells('A3:D3'); // Unir celdas
 
-    worksheet.getCell('A3').value = 'VERIFICACIÓN DEL AUTOMOTOR';
+    // worksheet.getCell('A3').value = 'VERIFICACIÓN DEL AUTOMOTOR';
     // worksheet.getCell('A3').alignment = { horizontal: 'center' };
     worksheet.getCell('A3').font = { bold: true, size: 10 };
 
