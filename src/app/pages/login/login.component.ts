@@ -1,7 +1,7 @@
 // Librerías de Angular
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 // Servicio de login
 import { login } from '../../api/auth.service';
 import { UserService } from '../../api/user.service';
@@ -10,7 +10,7 @@ import { UserService } from '../../api/user.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink ],
+  imports: [ReactiveFormsModule ],
   templateUrl: './login.component.html',
 })
 

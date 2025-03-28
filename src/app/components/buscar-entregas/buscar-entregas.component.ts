@@ -1,5 +1,5 @@
 // Angular
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 // Librerías 
 import Swal from 'sweetalert2';
@@ -156,6 +156,20 @@ export class BuscarEntregasComponent {
   
   }
 
+  @ViewChild('searchBox') searchBox!: ElementRef; // Referencia al input de búsqueda
+
+  @HostListener('document:keydown', ['$event'])
+onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    this.mostrarOpciones = false;
+  }
+}
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (this.searchBox && !this.searchBox.nativeElement.contains(event.target)) {
+      this.mostrarOpciones = false;
+    }
+  }
   // Función para buscar entregas
   async fetchEntregas() {
     try {
@@ -217,7 +231,6 @@ export class BuscarEntregasComponent {
   // Excel
 
   imprimir() {
-
     // @ts-ignore
     const transformedData = this.listaEntregas.flatMap(entrega =>
       // @ts-ignore
@@ -315,18 +328,11 @@ export class BuscarEntregasComponent {
       ];
     });
 
-
-    // Agregar los datos
-    //   worksheet.insertRows(9, transformedData);
-
     // Crear archivo Excel
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Entregas.xlsx');
     });
-
-
-    // listaEntregas viene con un NroEntrega y 
   }
 
 }

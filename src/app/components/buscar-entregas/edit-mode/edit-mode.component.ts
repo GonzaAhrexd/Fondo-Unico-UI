@@ -1,5 +1,5 @@
 // Angular
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 // APIs
 import { getFormularios } from '../../../api/formulario.service';
@@ -24,10 +24,11 @@ type Unidad = {
 export class EditModeComponentEntrega implements OnInit {
   constructor(private userService: UserService) { }
   // Datos de entrada
-  @Input() defaultData:any = []
+  @Input() defaultData: any = []
   // Variables internas
-  unidades:Unidad[] = []
-  renglones:number = 0
+  unidades: Unidad[] = []
+  renglones: number = 0
+  showAdvertencia = false // Variable para mostrar/ocultar la advertencia
   renglonesToDelete: number[] = [];
   data: any = [];
   busqueda: string = '';
@@ -74,12 +75,12 @@ export class EditModeComponentEntrega implements OnInit {
     };
   }
 
-  
+
   filtrarOpciones() {
     console.log('Texto en input:', this.form.value.Unidad); // Debug: Verificar que el input cambia
     const busquedaNormalizada = this.quitarTildes(this.form.value.Unidad.trim().toLowerCase());
 
-   
+
     if (busquedaNormalizada === '') {
       this.opcionesFiltradas = [...this.unidades]; // Mostrar todas las opciones
     } else {
@@ -97,14 +98,25 @@ export class EditModeComponentEntrega implements OnInit {
   }
 
   seleccionar(opcion: string) {
- 
+
     // Asignar la opción seleccionada al campo de búsqueda
     this.form.get('Unidad')?.setValue(opcion);
     this.mostrarOpciones = false;
+  }
 
-    // También puedes usar patchValue en lugar de setValue si lo prefieres
-    // this.form.patchValue({ Unidad: opcion.unidad });
-  
+  @ViewChild('searchBox') searchBox!: ElementRef; // Referencia al input de búsqueda
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.mostrarOpciones = false;
+    }
+  }
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (this.searchBox && !this.searchBox.nativeElement.contains(event.target)) {
+      this.mostrarOpciones = false;
+    }
   }
 
   // Función para eliminar un renglón	
@@ -128,13 +140,13 @@ export class EditModeComponentEntrega implements OnInit {
   ngOnInit() {
     this.fetchUnidades()
     this.fetchFormulario();
-    if(this.defaultData){
+    if (this.defaultData) {
       this.setFormValues()
     }
-    if(this.userService.getUser().rol != "Administrador"){
+    if (this.userService.getUser().rol != "Administrador") {
       this.form.controls['Unidad'].disable({ onlySelf: true });
+    }
   }
-}
 
   setFormValues() {
     // Establecer valores de fecha y unidad
@@ -152,8 +164,8 @@ export class EditModeComponentEntrega implements OnInit {
       });
     }
   }
-  
-// Función para formatear la fecha
+
+  // Función para formatear la fecha
   formatDate(date: string | Date): string {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -163,20 +175,20 @@ export class EditModeComponentEntrega implements OnInit {
   }
 
   // Función para obtener las unidades
-  fetchUnidades(){
+  fetchUnidades() {
     getUnidades().then((res) => {
       this.unidades = res;
     });
   }
 
   @Output() cancelEditMode = new EventEmitter<void>(false);
-  
-cancelChanges(){
-  this.cancelEditMode.emit();
-}
 
-// Guardar cambios
-  saveChanges(){
+  cancelChanges() {
+    this.cancelEditMode.emit();
+  }
+
+  // Guardar cambios
+  saveChanges() {
     console.log(this.form)
     Swal.fire({
       title: '¿Estás seguro?',
@@ -185,7 +197,7 @@ cancelChanges(){
       showCancelButton: true,
       confirmButtonColor: '#0C4A6E',
       cancelButtonColor: '#FF554C',
-       confirmButtonText: 'Guardar'
+      confirmButtonText: 'Guardar'
     }).then(async (result) => {
       if (result.isConfirmed) {
 
@@ -200,7 +212,7 @@ cancelChanges(){
         // Establecer los renglones en el formulario
         this.form.value.renglonesEntregas = renglones
 
-        for(const renglon of this.renglonesToDelete){
+        for (const renglon of this.renglonesToDelete) {
           await deleteRenglonEntrega(renglon)
         }
 
@@ -211,8 +223,8 @@ cancelChanges(){
           confirmButtonColor: '#0C4A6E',
         }).then(() => {
           // window.location.reload()   
-        })  
-        }
+        })
+      }
     })
   }
 

@@ -7,7 +7,7 @@
     <input formControlName="Fecha" id="Fecha" type="date"
       class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />         
     <span class="flex font-medium ml-4"> Unidad </span>
-    <div class="w-full">
+    <div class="w-full"  #searchBox>
       <!-- Input de búsqueda -->
       <input
         type="text"
@@ -41,29 +41,38 @@
     <ng-container formArrayName="renglonesEntregas" class="flex flex-col items-center justify-center w-full">
       <div class="bg-slate-300 rounded-lg flex flex-col items-center justify-center w-full overflow-hidden "> 
         @for (renglon of renglonesEntregas.controls; track renglonesEntregas; let i = $index) {
-          <div [formGroupName]="i" class="grid grid-cols-6 items-center justify-center w-full ">
-            <p class="text-xl font-bold ml-4">
-              {{i + 1}}.
+          <div [formGroupName]="i" class="grid grid-cols-6 grid-cols-[60px_auto_auto_auto_auto_40px] items-center justify-center w-full ">
+          <p class="text-xl font-bold ml-4 flex flex-row items-center " >
+            {{i + 1}}. 
+            @if(renglon.hasError('hastaMenorQueDesde')) {
+              <div class="text-red-500" (mouseenter)="showAdvertencia = true" (mouseleave)="showAdvertencia=false"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+              @if(showAdvertencia){
+                <div class="absolute bg-red-500 text-white rounded-lg p-2 mt-2">
+                  "Hasta" debe ser mayor que "Desde"
+                </div>
+              }
+              </div>
+            }
           </p> 
           <select formControlName="TipoFormulario" id="TipoFormulario"
-              class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm  pl-2">
+              class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full pl-2">
               <option value="0">Selecciona un tipo de formulario</option>
               @for (form of data; track form.id) {
                 <option value="{{form.formulario}}">{{form.formulario}}</option>
               }
             </select>
     
-            @if(renglon.hasError('hastaMenorQueDesde')) {
-              <div class="text-red-500">Hasta debe ser menor que desde</div>
-            }
+            
             <input (wheel)="preventScroll($event)" formControlName="Desde" type="number" placeholder="Desde" 
-              class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
+              class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
             
             <input (wheel)="preventScroll($event)" formControlName="Hasta" type="number" placeholder="Hasta" 
-              class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
+              class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
             
             <input (wheel)="preventScroll($event)" formControlName="Cantidad" type="number" placeholder="Cantidad" 
-              class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
+              class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full max-w-sm pl-2" />
             
             <div class="flex flex-col items-center justify-center">
               <button (click)="deleteLesson(i)" class="flex flex-col items-center justify-center bg-sky-700 text-white rounded-lg h-10 w-10 cursor-pointer">
@@ -76,7 +85,6 @@
         }
       </div>  
     </ng-container>
-    
       </div>
     
   <div class="flex flex-col items-center justify-center">

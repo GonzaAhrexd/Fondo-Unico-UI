@@ -1,5 +1,5 @@
 // Librerías
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
@@ -101,13 +101,25 @@ export class AgregarEntregaComponent implements OnInit {
     });
   }
 
+  @ViewChild('searchBox') searchBox!: ElementRef; // Referencia al input de búsqueda
+
+  @HostListener('document:keydown', ['$event'])
+onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    this.mostrarOpciones = false;
+  }
+}
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (this.searchBox && !this.searchBox.nativeElement.contains(event.target)) {
+      this.mostrarOpciones = false;
+    }
+  }
+
 
   // Función para filtrar las opciones
   filtrarOpciones() {
-
     const busquedaNormalizada = this.quitarTildes(this.form.value.Unidad.trim().toLowerCase());
-
-
     if (busquedaNormalizada === '') {
       this.opcionesFiltradas = [...this.unidades]; // Mostrar todas las opciones
     } else {
@@ -125,26 +137,16 @@ export class AgregarEntregaComponent implements OnInit {
   }
 
   seleccionar(opcion: string) {
-
     // Asignar la opción seleccionada al campo de búsqueda
     this.form.get('Unidad')?.setValue(opcion);
     this.mostrarOpciones = false;
-
-    // También puedes usar patchValue en lugar de setValue si lo prefieres
-    // this.form.patchValue({ Unidad: opcion.unidad });
-
   }
 
   async ngOnInit() {
     await this.fetchUnidades()
     this.fetchFormulario();
-
     const recentNumberGenerated = await getLastNumeroEntrega() + 1;
     this.form.get('NroEntregaManual')?.setValue(recentNumberGenerated);
-
-
-
-
   }
 
   fetchUnidades() {
