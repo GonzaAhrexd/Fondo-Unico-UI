@@ -7,18 +7,18 @@
       <input formControlName="Fecha" id="Fecha" type="date"
         class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />         
       <span class="flex font-medium ml-4"> Unidad </span> 
-      <div class="w-full" #searchBox>
+      <div class="w-full max-w-full relative overflow-hidden" #searchBox>
         <input
           type="text"
           formControlName="Unidad"
           (input)="filtrarOpciones()"
           (focus)="mostrarOpciones = true"
-          class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2 w-full"
+          class="relative border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 p-2 w-full"
           placeholder="Busca una opción..."
         />
         @if (mostrarOpciones) {
           <ul
-            class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto"
+            class="relative max-w-full z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto"
           >
             @for (opcion of opcionesFiltradas; track opcion) {
               <li

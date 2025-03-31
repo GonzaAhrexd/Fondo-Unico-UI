@@ -1,1 +1,54 @@
-<p>administrar-usuarios works!</p>
+<div class="mt-2 flex flex-col items-center justify-center">
+
+    <button
+        class="cursor-pointer mt-2 bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2"
+        (click)="modoDNI = !modoDNI">{{modoDNI ? "Filtrar por DNI" : "Filtrar por Rol"}}</button>
+
+</div>
+
+
+
+<form class="w-full" [formGroup]="formulario">
+    @if(modoDNI){
+    <div class="flex flex-col w-full">
+        <div class="flex flex-col w-full">
+            <span class="flex font-medium ml-4">
+                DNI
+            </span>
+            <div class="flex flex-col w-full">
+                <input formControlName="DNI" id="DNI" type="text"
+                    class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+            </div>
+        </div>
+    </div>
+    }
+
+    @else {
+
+    <div class="flex flex-col w-full">
+        <span class="flex font-medium ml-4"> Rol </span>
+        <select formControlName="Rol" id="Rol"
+            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
+            <option value="0">Selecciona un rol</option>
+            @for (rol of opcionesRol; track rol) {
+            <option value="{{rol.texto}}">{{ rol.texto }}</option>
+            }
+        </select>
+    </div>
+    }
+
+    <div class="w-full flex flex-col items-center justify-center">
+        <button
+            class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2 my-2"
+            (click)="BuscarUsuarios()
+        ">Buscar</button>
+
+    </div>
+    @if(!isEmpty){
+        
+
+    <TableComponentAdministrarUsuarios [defaultColumns]="defaultColumns" [data]="listaUsuarios" />
+
+    }
+
+</form>
