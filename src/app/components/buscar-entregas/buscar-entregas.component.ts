@@ -51,7 +51,6 @@ export class BuscarEntregasComponent {
   ]
 
   // Variables
-
   unidades: Unidad[] = []
   listaEntregas: any = []
   isEmpty = true
@@ -59,7 +58,6 @@ export class BuscarEntregasComponent {
   mostrarOpciones: boolean = false // Variable para mostrar/ocultar las opciones
   opcionesFiltradas: Unidad[] = this.unidades; // Inicialmente mostrar todas las opciones
   data: any = []; // Variable para almacenar los formularios
-
 
   // Formulario
   buscarEntregasForm: FormGroup = new FormGroup({

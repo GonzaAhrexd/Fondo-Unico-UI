@@ -1,1 +1,61 @@
-<p>buscar-depositos works!</p>
+<!-- Formulario para filtrar -->
+<form [formGroup]="buscarDepositosForm" class="flex flex-col items-center justify-center w-full">
+    <div class="flex flex-col w-full ">
+        <span class="flex font-medium ml-4"> Nro. Depósito </span>
+        <input formControlName="NroDeposito" id="NroDeposito" type="text"
+            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+            <span class="flex font-medium ml-4"> Unidad </span>
+            <div class="w-full"  #searchBox>
+                <!-- Input de búsqueda -->
+                <input
+                  type="text"
+                  formControlName="Unidad"
+                  (input)="filtrarOpciones()"
+                  (focus)="mostrarOpciones = true"
+                  class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2 w-full"
+                  placeholder="Busca una opción..."
+                />
+              
+                <!-- Lista de opciones -->
+                 @if(mostrarOpciones){  
+                   <ul
+                   class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto"
+                   >
+                   @for(opcion of opcionesFiltradas; track opcion){ 
+                     <li (click)="seleccionar(opcion.unidad)"
+                     class="p-2 cursor-pointer hover:bg-blue-100"
+                     >
+                     {{ opcion.unidad }}
+                    </li>
+                  }
+                </ul>
+              }
+              </div>
+           
+        </div>
+        <div class="flex flex-col w-full">
+            <span class="flex font-medium ml-4"> Desde </span>
+            <input formControlName="Desde" id="desde" type="date"
+                class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+        </div>
+        <div class="flex flex-col w-full">
+            <span class="flex font-medium ml-4"> Hasta </span>
+            <input formControlName="Hasta" id="hasta" type="date" class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+        </div>
+        <div (click)="fetchDepositos()" class="cursor-pointer bg-sky-950 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2">
+            Buscar
+        </div>
+</form>
+<!-- Componente que muestra la tabla -->
+  @if(!isEmpty){ 
+    
+    <!-- <div class="flex flex-col items-center justify-center mt-2 ">
+        <div (click)="imprimir()" class="cursor-pointer bg-sky-950 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2">
+            Imprimir
+        </div>
+    </div>
+     -->
+
+        <TableComponentDeposito [defaultColumns]="defaultColumns" [data]="depositos" /> 
+} 
+ 

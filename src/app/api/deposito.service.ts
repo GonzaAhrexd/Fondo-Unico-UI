@@ -3,7 +3,21 @@ import axios from './axios'
 export const getDepositos = async () => {
     const response = await axios.get('/depositos')
     return response.data
-    }
+}
+
+export const buscarDepositos = async (data: any) => {
+    const response = await axios.get(`/depositos/${data.Unidad}/${data.Desde}/${data.Hasta}`)
+
+    console.log(response.data)
+    return response.data
+}
+
+export const buscarDepositosPorNroDeposito = async (nroDeposito: string) => {
+    const response = await axios.get(`/depositos/buscar-por-nro-deposito/${nroDeposito}`)
+    return response.data
+}
+
+
 
 export const getDeposito = async (id: number) => {
     const response = await axios.get(`/depositos/${id}`)
@@ -15,8 +29,8 @@ export const createDeposito = async (data: any) => {
     return response.data
 }
 
-export const updateDeposito = async (id: number, data: any) => {
-    const response = await axios.put(`/depositos/${id}`, data)
+export const updateDeposito = async (data: any) => {
+    const response = await axios.put(`/Depositos/${data.Id}`, data)
     return response.data
 }
 

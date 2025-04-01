@@ -1,19 +1,30 @@
-<form class="w-full" [formGroup]="form">
-    <div class="flex flex-col w-full">
-        <span class="flex font-medium ml-4"> Nro. Ticket </span>
-        <input formControlName="NroTicket" id="NroTicket" type="text"
+<form class="w-full flex flex-col" [formGroup]="form">
+        <span class="flex font-medium ml-4"> Nro. Depósito </span>
+        <input formControlName="NroDeposito" id="NroDeposito" type="number" (wheel)="preventScroll($event)"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
         <span class="flex font-medium ml-4"> Fecha </span>
         <input formControlName="Fecha" id="Fecha" type="date"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+        <span class="flex font-medium ml-4"> Periodo Arqueo </span>
+        <input formControlName="PeriodoArqueo" id="PeriodoArqueo" type="date"
+            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
         <span class="flex font-medium ml-4"> Unidad </span>
-        <select formControlName="Unidad" id="Unidad"
-            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
-            <option value="0">Selecciona una opción</option>
-            @for (unidad of unidades; track unidad.unidad) {
-            <option value="{{unidad.unidad}}">{{ unidad.unidad }}</option>
+        <div class="w-full max-w-full relative overflow-hidden" #searchBox>
+            <input type="text" formControlName="Unidad" (input)="filtrarOpciones()" (focus)="mostrarOpciones = true"
+                class="relative border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 p-2 w-full"
+                placeholder="Busca una opción..." />
+            @if (mostrarOpciones) {
+            <ul
+                class="relative max-w-full z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto">
+                @for (opcion of opcionesFiltradas; track opcion) {
+                <li (click)="seleccionar(opcion.unidad)" class="p-2 cursor-pointer hover:bg-blue-100">
+                    {{ opcion.unidad }}
+                </li>
+                }
+            </ul>
             }
-        </select>
+        </div>
+
         <span class="flex font-medium ml-4"> Banco </span>
         <select formControlName="Banco" id="Banco"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
@@ -25,7 +36,10 @@
         <span class="flex font-medium ml-4"> Cuenta </span>
         <input formControlName="Cuenta" id="Cuenta" type="text"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
-      
+            <span class="flex font-medium ml-4"> Boleta </span>
+            <input formControlName="Boleta" id="Boleta" type="number"
+            (wheel)="preventScroll($event)" class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+    
         <span class="flex font-medium ml-4"> Importe </span>
         <input (wheel)="preventScroll($event)" formControlName="Importe" id="Importe" type="number"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
@@ -34,9 +48,6 @@
                 class="cursor-pointer bg-sky-950 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2">
                 Guardar
             </div>
-            
+
         </div>
-
-    </div>
-
 </form>
