@@ -25,13 +25,14 @@ export class EditModeComponentDeposito {
   bancos:any = []
 
   form: FormGroup = new FormGroup({
+    Id: new FormControl(''),
     NroDeposito: new FormControl(''),
-    NroTicket: new FormControl('', [Validators.required]),
     Fecha: new FormControl('', [Validators.required]),
+    PeriodoArqueo: new FormControl('', [Validators.required]),
     Unidad: new FormControl('', [Validators.required]),
     Banco: new FormControl('', [Validators.required]),
     Cuenta: new FormControl('', [Validators.required]),
-    Tipo: new FormControl('', [Validators.required]),
+    Boleta: new FormControl('', [Validators.required]),
     Importe: new FormControl('', [Validators.required]), 
   });
 
@@ -43,13 +44,14 @@ export class EditModeComponentDeposito {
     this.fetchBancos()
 
     this.form.patchValue({
+      Id: this.defaultData.id,
       NroDeposito: this.defaultData.nroDeposito,
-      NroTicket: this.defaultData.nroTicket,
       Fecha: this.formatDate(this.defaultData.fecha),
+      PeriodoArqueo: this.formatDate(this.defaultData.periodoArqueo),
       Unidad: this.defaultData.unidad,
       Banco: this.defaultData.banco,
       Cuenta: this.defaultData.cuenta,
-      Tipo: this.defaultData.tipo,
+      Boleta: this.defaultData.boleta,
       Importe: this.defaultData.importe,
     });
     
@@ -138,6 +140,7 @@ export class EditModeComponentDeposito {
           confirmButtonText: 'Sí, enviar!'
         }).then((result) => {
           if (result.isConfirmed) {
+            console.log(this.form.value)
             const formData = this.form.getRawValue(); // getRawValue() incluye los campos deshabilitados
             updateDeposito(formData).then((res) => {
               Swal.fire(

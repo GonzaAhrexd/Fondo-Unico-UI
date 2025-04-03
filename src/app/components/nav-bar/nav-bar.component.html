@@ -1,22 +1,22 @@
-<div class="flex flex-col fixed top-0 left-0 h-screen bg-sky-700 text-white w-[2.5rem] md:w-[4.5rem]">
+<div class="flex flex-col fixed top-0 left-0 h-screen bg-sky-700 text-white w-[2.5rem] md:w-[4.5rem] bg-linear-180 from-sky-900 to-sky-500">
 
     <!-- Imagen -->
     <div class="flex flex-col p-1 md:p-4 cursor-pointer" [routerLink]="['/']">
         <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-[400px] mx-auto" alt="">
-        <span class="hidden md:block text-sm font-bold">Fondo Único</span>
+        <span class="hidden md:flex text-sm font-bold">Fondo Único</span>
     </div>
 
     @for (seccion of seccionesPagina; track seccion) {
       <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
         <div [innerHTML]="seccion.svg"></div>
-        <span class=" hidden md:block text-sm flex flex-col items-center justify-center">{{seccion.nombre}}</span>
+        <span class=" hidden md:flex text-sm flex-col items-center justify-center">{{seccion.nombre}}</span>
       </div>
     }
     @if(rol == "Administrador"){
       @for (seccion of seccionesAdmin; track seccion) {
         <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
           <div [innerHTML]="seccion.svg"></div>
-          <span class=" hidden md:block text-sm flex flex-col items-center justify-center">{{seccion.nombre}}</span>
+          <span class=" hidden md:flex text-sm  flex-col items-center justify-center">{{seccion.nombre}}</span>
         </div>
       }
     }
