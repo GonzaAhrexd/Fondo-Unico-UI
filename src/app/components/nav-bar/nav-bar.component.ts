@@ -17,6 +17,11 @@ export class NavBarComponent {
   rol:string = ""
   toggleSideBarMobile: boolean = false;
   opcionesTodo = [
+    {texto: "Inicio", ruta: "/home", svg: `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+      </svg>
+      `},
     {texto: "Entregas", ruta: "/entregas", svg: `
        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
@@ -57,7 +62,7 @@ export class NavBarComponent {
 
       
   ngOnInit() {
-    this.usuario = this.userService.getUser().nombre;
+    this.usuario = this.userService.getUser().nombre + " " + this.userService.getUser().apellido;
     this.rol = this.userService.getUser().rol;
     this.opcionesTodo.forEach(seccion => {
       // @ts-ignore

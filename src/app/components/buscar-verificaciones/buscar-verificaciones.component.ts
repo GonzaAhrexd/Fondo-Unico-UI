@@ -64,11 +64,6 @@ export class BuscarVerificacionesComponent {
       accessorKey: 'importe',
       header: () => 'Importe',
       cell: info => info.getValue(),
-    },
-    {
-      accessorKey: 'estaAnulado',
-      header: () => 'Detalles',
-      cell: info => info.getValue() == 1 ? 'Anulado' : 'Ninguno',
     }
   ]
   // Variables
@@ -185,7 +180,7 @@ export class BuscarVerificacionesComponent {
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Verificaciones');
 
-    worksheet.mergeCells('A1:G1'); // Unir celdas
+    worksheet.mergeCells('A1:H1'); // Unir celdas
     worksheet.getCell('A1').value = 'JEFATURA DE POLICÍA';
     // worksheet.getCell('A1').alignment = { horizontal: 'center' };
     worksheet.getCell('A1').font = { bold: true, size: 10 };
@@ -201,17 +196,19 @@ export class BuscarVerificacionesComponent {
     // worksheet.getCell('A3').alignment = { horizontal: 'center' };
     worksheet.getCell('A3').font = { bold: true, size: 10 };
 
-    worksheet.mergeCells('A4:J4'); // Unir celdas
+    worksheet.mergeCells('A4:K4'); // Unir celdas
     worksheet.getCell('A4').value = 'INFORME DE VERIFICACIONES';
     worksheet.getCell('A4').alignment = { horizontal: 'center' };
     worksheet.getCell('A4').font = { bold: true, size: 14 };
     worksheet.getRow(4).height = 20;
 
-    worksheet.mergeCells('H1:J1'); // Unir celdas
-    worksheet.getCell('H1').value = `Fecha de impresión: ${new Date().toLocaleDateString("es-AR")}`;
+    worksheet.mergeCells('I1:K1'); // Unir celdas
+    worksheet.getCell('I1').value = `Fecha de impresión: ${new Date().toLocaleDateString("es-AR")}`;
 
     worksheet.mergeCells('A6:J6'); // Unir celdas
-    worksheet.getCell('A6').value = `Periodo desde ${new Date(this.buscarVerificacionesForm.value.Desde).toLocaleDateString("es-AR")} hasta ${new Date(this.buscarVerificacionesForm.value.Hasta).toLocaleDateString("es-AR")}`;
+    if(this.buscarVerificacionesForm.value.Desde != ''){
+      worksheet.getCell('A6').value = `Periodo desde ${new Date(this.buscarVerificacionesForm.value.Desde).toLocaleDateString("es-AR")} hasta ${new Date(this.buscarVerificacionesForm.value.Hasta).toLocaleDateString("es-AR")}`;
+    }
     // worksheet.getCell('A4').alignment = { horizontal: 'center' };
     worksheet.getCell('A6').font = { bold: true, size: 10 };
 
@@ -227,7 +224,7 @@ export class BuscarVerificacionesComponent {
 
 
     // Haz que desde A8 hasta J8 tenga un borde abajo sin hacerlo manualmente uno a uno, no directamente getRow(8) porque lo hace en todo le documento y solo quiero de la A a la J
-    for (let col = 1; col <= 10; col++) { // 1 = A, 10 = J
+    for (let col = 1; col <= 11; col++) { // 1 = A, 10 = J
       const cell4 = worksheet.getCell(4, col);
 
       const cell8 = worksheet.getCell(8, col);
@@ -260,7 +257,7 @@ export class BuscarVerificacionesComponent {
     this.verificaciones.forEach((data: any, index: number) => {
       const rowIndex = 9 + index; // Empieza en la fila 9
       worksheet.getRow(rowIndex).values = [
-        data.fecha,
+        new Date(data.fecha).toLocaleDateString("es-AR"),
         data.recibo,
         data.tipo,
         data.estaAnulado == 1 ? 'Anulado' : 'Ninguno',
