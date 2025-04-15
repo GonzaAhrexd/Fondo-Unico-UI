@@ -1,7 +1,6 @@
-<div class="w-full">
-    <div class="overflow-x-auto">
+<div class="p-4 overflow-x-auto">
     <table class="min-w-full table-auto border-collapse">
-        <thead class="bg-sky-900 text-white">
+        <thead class="bg-sky-950 text-white">
             @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
             <tr>
                 @for (header of headerGroup.headers; track header.id) {
@@ -28,7 +27,7 @@
 
             <tr class="hover:bg-gray-100">
                 @for (cell of row.getVisibleCells(); track cell.id) {
-                <td class="py-3 px-4 text-sm  border-b border-gray-300">
+                <td class="py-3 px-4 text-sm border-b border-gray-300">
                     <ng-container *flexRender="
                     cell.column.columnDef.cell;
                     props: cell.getContext();
@@ -42,7 +41,7 @@
 
                 <div class="flex flex-row items-center justify-center space-x-4">
                     <button (click)="expandThisRow(row)"
-                        class="flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
+                        class="flex flex-col items-center justify-center disabled:bg-gray-700 bg-sky-950 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
 
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6 w-6">
@@ -54,25 +53,28 @@
             </tr>
 
             @if(row.getIsExpanded()){
-            <td [attr.colspan]="8" class="whitespace-nowrap">
-        
-                <!-- <div class="w-full flex flex-col items-center justify-center p-2"> -->
-                    <expanded-component [data]="row.original" />
-                   
-                    
-                <!-- </div> -->
-
-
-
+            @if(!editMode){
+            <td [attr.colspan]="10">
+                <div class="w-full flex flex-col items-start md:items-center  justify-start md:justify-center p-2">
+                    <!-- <EditModeVerificacion [defaultData]="row.original" /> -->
+                    <p>Hola</p>
+                </div>
+              
 
             </td>
-
+            }@else {
+            <td [attr.colspan]="4">
+                <!-- <EditMode [defaultData]="row.original" /> -->
+            </td>
+            }
             }
             }
 
         </tbody>
     </table>
 </div>
+<div class="flex flex-col justify-end items-end w-full mr-10">
+    <span class="text-lg">Total ${{importeTotal}}</span>
 </div>
 
 <div>
@@ -96,11 +98,11 @@
     </div>
 
     <button (click)="table.previousPage()" [disabled]="!table.getCanPreviousPage()"
-        class="disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 rounded-lg w-6/10 text-white font-bold py-2 px-4 ">
+        class="disabled:bg-gray-700 bg-sky-950 hover:bg-sky-800 rounded-lg w-6/10 text-white font-bold py-2 px-4 ">
         Anterior
     </button>
     <button (click)="table.nextPage()" [disabled]="!table.getCanNextPage()"
-        class="disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 w-6/10 text-white font-bold py-2 px-4 rounded-lg">
+        class="disabled:bg-gray-700 bg-sky-950 hover:bg-sky-800 w-6/10 text-white font-bold py-2 px-4 rounded-lg">
         Siguiente
     </button>
 </div>

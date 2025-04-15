@@ -9,7 +9,8 @@ import { getFormularios } from '../../api/formulario.service';
 import { sendEntrega, getLastNumeroEntrega } from '../../api/entregas.service';
 import { getUnidades } from '../../api/unidades.service';
 import { UserService } from '../../api/user.service';
-import { FormsModule } from '@angular/forms'; // <-- IMPORTAR ESTO
+import { FormsModule } from '@angular/forms'; 
+
 
 
 type Unidad = {

@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common'; // Asegúrate de importar esto
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
   </head>
-  <body [ngClass]="{'flex flex-col ml-[1rem] md:ml-[5rem]': !isLoginPage}">
+  <body [ngClass]="{'flex flex-col lg:ml-[15rem]': !isLoginPage}">
   <router-outlet />   
   </body>
 </html>

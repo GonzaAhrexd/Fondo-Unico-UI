@@ -12,7 +12,7 @@ export const sendEntrega = async (entrega: any) => {
 
 export const buscarEntrega = async (entrega: any) => {
     try {
-        const response = await axios.get(`/Entregas/${entrega.Unidad}/${entrega.Desde}/${entrega.Hasta}`);
+        const response = await axios.get(`/Entregas/${entrega.Unidad}/${entrega.Desde}/${entrega.Hasta}/${entrega.Formulario}`);
         return response.data;
     } catch (error) {
         console.error(error);

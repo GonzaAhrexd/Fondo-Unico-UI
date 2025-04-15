@@ -1,32 +1,163 @@
-<div class="flex flex-col fixed top-0 left-0 h-screen bg-sky-700 text-white w-[2.5rem] md:w-[4.5rem] bg-linear-180 from-sky-900 to-sky-500">
-
-    <!-- Imagen -->
-    <div class="flex flex-col p-1 md:p-4 cursor-pointer" [routerLink]="['/']">
-        <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-[400px] mx-auto" alt="">
-        <span class="hidden md:flex text-sm font-bold">Fondo Único</span>
-    </div>
-
-    @for (seccion of seccionesPagina; track seccion) {
-      <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
-        <div [innerHTML]="seccion.svg"></div>
-        <span class=" hidden md:flex text-sm flex-col items-center justify-center">{{seccion.nombre}}</span>
-      </div>
-    }
-    @if(rol == "Administrador"){
-      @for (seccion of seccionesAdmin; track seccion) {
-        <div [routerLink]="seccion.ruta" class="cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
-          <div [innerHTML]="seccion.svg"></div>
-          <span class=" hidden md:flex text-sm  flex-col items-center justify-center">{{seccion.nombre}}</span>
-        </div>
-      }
-    }
-
-    <div (click)="cerrarSesion()" class="mt-auto cursor-pointer p-4 hover:bg-sky-800 flex flex-col items-center justify-center">
-      <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+    <!-- Barra visible para activar el sidebar -->
+    <div class="lg:hidden flex  items-center p-4 h-12 bg-sky-900 hover w-full ">
+      <svg (click)="toggleSideBarMobile = true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6 text-white cursor-pointer">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
+  
+      <div class="flex flex-row items-center justify-end p-4 w-full">
+          <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-6 mr-2" alt="" >
+          <div class="flex flex-col">
+              <h1 class="text-sm text-white font-bold">Fondo Único</h1>
+              <h2 class="text-sm text-white font-sans">Policía del Chaco</h2>
+          </div>
       </div>
-    </div>
-
-</div>
+  
+  </div>
+  
+  <!-- Sidebar -->
+  
+  
+  @if(toggleSideBarMobile){
+  
+  <div class="lg:hidden overflow-y-auto animate-fadeInDown flex-col w-screen fixed z-10 top-0 left-0 justify-between h-screen bg-sky-900 text-white  ">
+      <!-- Logo -->
+      <div (click)="toggleSideBarMobile=false" class="w-full flex flex-col items-end justify-end p-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class=" w-8 cursor-pointer">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+      </div>
+      <div class="flex flex-row items-center justify-center px-4 pb-4 w-full">
+          <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-16 mr-2" alt="">
+          <div class="flex flex-col">
+              <h1 class="text-4xl font-bold">Fondo Único</h1>
+              <h2 class="text-3xl font-sans">Policía del Chaco</h2>
+          </div>
+  
+      </div>
+  
+      <!-- Menú -->
+      <nav class="flex-1 overflow-y-auto h-5/10 w-full">
+          <ul class="space-y-4 px-4">
+              @for(opcion of opcionesTodo; track opcion.texto){
+              <li>
+                  <div [routerLink]="opcion.ruta" class="flex items-center space-x-3 hover:text-sky-300 cursor-pointer">
+                    <div [innerHTML]="opcion.svg"></div>
+                     
+                      <span class="text-2xl font-bold">{{ opcion.texto }}</span>
+                  </div>
+  
+              </li>
+              }
+              
+  
+  
+              @if(rol == "Administrador"){
+              @for(opcion of opcionesPaginaAdmin; track opcion.texto){
+                  <li>
+                      <div [routerLink]="opcion.ruta" class="flex items-center space-x-3 hover:text-sky-300 cursor-pointer">
+                        <div [innerHTML]="opcion.svg"></div>                          
+                          <span class="text-2xl font-bold">{{ opcion.texto }}</span>
+                      </div>
+                  </li>
+                  }
+              }
+          </ul>
+      </nav>
+  
+      <!-- Usuario -->
+      <div class="p-4 border-t border-sky-800">
+          <div class="flex flex-col-center space-x-4">
+              <div class="flex flex-row items-center space-x-4">
+              <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    
+              </div>
+  
+              <div>
+                  
+  
+                  <p class="text-2xl font-semibold">{{usuario ? usuario : "Nada"}}</p>
+                  <p class="text-xl text-gray-400">{{ usuario ? rol : "Nada"}}</p>
+                  
+              </div>
+              
+      
+              </div>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full">
+              <button (click)="cerrarSesion()" class="bg-sky-800 hover:bg-sky-950 text-white rounded-lg p-2 m-2 w-full text-2xl">Cerrar sesión</button>
+          </div>
+      </div>
+  </div>
+  }
+  
+  
+  <div class="hidden lg:flex flex-col fixed top-0 left-0 justify-between h-screen bg-sky-900 text-white  "
+      style="width: 15rem;">
+      <!-- Logo -->
+      <div class="flex flex-row p-4">
+          <img src="./Escudo_Policia_Chaco_Transparente.png" class="w-12 mr-2" alt="">
+          <div class="flex flex-col">
+              <h1 class="text-2xl font-bold">Fondo Único</h1>
+              <h2 class="text-xl font-sans">Policía del Chaco</h2>
+          </div>
+      </div>
+  
+      <!-- Menú -->
+      <nav class="flex-1 overflow-y-auto">
+          <ul class="space-y-4 px-4">
+              @for(opcion of opcionesTodo; track opcion.texto){
+              <li>
+                  <div [routerLink]="opcion.ruta" class="flex items-center space-x-3 hover:text-sky-300 cursor-pointer">
+                    <div [innerHTML]="opcion.svg"></div>
+                       
+                      <span>{{ opcion.texto }}</span>
+                  </div>
+                  
+              </li>
+              }
+              @if(rol == "Administrador"){
+                  @for(opcion of opcionesPaginaAdmin; track opcion.texto){
+                      <li>
+                      <div [routerLink]="opcion.ruta" class="flex items-center space-x-3 hover:text-sky-300 cursor-pointer">
+                        <div [innerHTML]="opcion.svg"></div>
+                        
+                          <span>{{ opcion.texto }}</span>
+                      </div>
+                  </li>
+              }
+          }
+          </ul>
+      </nav>
+  
+      <!-- Usuario -->
+      <div class="p-4 border-t border-sky-800">
+          <div class="flex flex-col-center space-x-4">
+              <div class="flex flex-row items-center space-x-4">
+              <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    
+              </div>
+  
+              <div>
+                  
+  
+                  <p class="font-semibold">{{usuario ? usuario : "Nada"}}</p>
+                  <p class="text-sm text-gray-400">{{ usuario ? rol : "Nada"}}</p>
+              </div>
+              
+      
+              </div>
+          </div>
+          <div class="flex flex-col items-center justify-center w-full">
+              <button (click)="cerrarSesion()" class="bg-sky-800 hover:bg-sky-950 text-white rounded-lg p-2 m-2">Cerrar sesión</button>
+          </div>
+      </div>
+  </div>

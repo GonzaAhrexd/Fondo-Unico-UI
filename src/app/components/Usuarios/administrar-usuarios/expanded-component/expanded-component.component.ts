@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { getUnidades } from '../../../../api/unidades.service';
 import { editUsuario, deleteUsuario } from '../../../../api/auth.service';
 import Swal from 'sweetalert2';
-
+import { UserService } from '../../../../api/user.service';
 @Component({
   selector: 'expanded-component',
   standalone: true,
@@ -20,8 +20,11 @@ export class ExpandedComponentComponent {
       Id: new FormControl('', []),
       Rol: new FormControl('', []),
     })
-
- 
+  constructor(private userService: UserService) { 
+    this.userID = this.userService.getUser().id // Obtiene el ID del usuario
+  }
+    
+  userID = 0 
 
     roles = [
       { rol: "Usuario" }, 

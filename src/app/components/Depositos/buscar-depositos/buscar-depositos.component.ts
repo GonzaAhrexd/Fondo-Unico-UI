@@ -193,7 +193,6 @@ onKeydown(event: KeyboardEvent) {
   
     worksheet.mergeCells('A6:G6'); // Unir celdas
     worksheet.getCell('A6').value = `Periodo desde ${new Date(this.buscarDepositosForm.value.Desde).toLocaleDateString("es-AR")} hasta ${new Date(this.buscarDepositosForm.value.Hasta).toLocaleDateString("es-AR")}`;
-    // worksheet.getCell('A4').alignment = { horizontal: 'center' };
     worksheet.getCell('A6').font = { bold: true, size: 10 };
   
   

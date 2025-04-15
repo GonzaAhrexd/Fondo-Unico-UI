@@ -4,8 +4,29 @@
     <h1 class="text-4xl">Bienvenido {{usuario}} </h1>
     <h2 class="text-2xl">Accesos directos</h2>
     <div class="flex flex-row items-center justify-center">
-        <div class="grid gap-1 w-full">
+        <div class="grid gap-1 grid-cols-2 md:grid-cols-4 w-full">
+        
+           @for(opcion of OpcionesFondo; track opcion) {
+            <app-home-buttons [texto]="opcion.texto" [ruta]="opcion.ruta" [SVG]="opcion.SVG" />
+           }
+        
         
         </div>
         
     </div>
+    @if(usuarioRol == "Administrador"){
+
+        <h2 class="text-2xl">Administración</h2>
+        <div class="flex flex-row items-center justify-center">
+            <div class="grid gap-1 md:grid-cols-2 w-full">
+                
+                @for(opcion of OpcionesAdmin; track opcion) {
+                    <app-home-buttons [texto]="opcion.texto" [ruta]="opcion.ruta" [SVG]="opcion.SVG" />
+                }
+                
+                
+            </div>
+            
+        </div>
+    }
+        

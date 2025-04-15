@@ -10,9 +10,9 @@ import { ColumnDef } from '@tanstack/angular-table';
 import { getUnidades } from '../../api/unidades.service';
 import { UserService } from '../../api/user.service';
 import { buscarEntrega, deleteEntrega, buscarEntregaPorNro } from '../../api/entregas.service';
+import { getFormularios } from '../../api/formulario.service';
 // Componentes
 import { TableComponentEntrega } from './table/table.component'
-
 // Tipo
 type Unidad = {
   id: number,
@@ -58,10 +58,11 @@ export class BuscarEntregasComponent {
   mostrarOpciones: boolean = false // Variable para mostrar/ocultar las opciones
   opcionesFiltradas: Unidad[] = this.unidades; // Inicialmente mostrar todas las opciones
   data: any = []; // Variable para almacenar los formularios
-
+  formularios:any = []
   // Formulario
   buscarEntregasForm: FormGroup = new FormGroup({
     NroEntrega: new FormControl('',),
+    Formulario: new FormControl('',),
     Unidad: new FormControl('', [Validators.required]),
     Desde: new FormControl('', [Validators.required]),
     Hasta: new FormControl('', [Validators.required]),
@@ -93,11 +94,20 @@ export class BuscarEntregasComponent {
     })
   }
 
+  fetchFormularios() {
+    getFormularios().then((data) => {
+      this.formularios = data      
+      this.formularios.unshift({ id: 0, formulario: 'Listar todo' });
+    })
+  }
+
   // Inicializar
   ngOnInit() {
     this.fetchUnidades()
+    this.fetchFormularios()
     this.buscarEntregasForm.patchValue({
-      Unidad: "Listar todo"
+      Unidad: "Listar todo",
+      Formulario: "Listar todo"
     })
 
     this.buscarEntregasForm.get('NroEntrega')?.valueChanges.subscribe(value => {

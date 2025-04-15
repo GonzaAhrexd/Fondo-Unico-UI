@@ -2,6 +2,9 @@
 
     {{ data.Id }}
     <span class="flex font-medium ml-4"> Rol </span>
+    @if(data.id == userID){ 
+        <span class="flex font-medium ml-4"> No puedes editar tu propio rol </span>
+    }@else{
     <select formControlName="Rol" id="Rol"
         class="border open-sans border-gray-300 w-full md:w-6/10 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
         <option value="0">Selecciona una opción</option>
@@ -9,13 +12,13 @@
         <option value="{{rol.rol}}">{{ rol.rol }}</option>
         }
     </select>
- 
+}
 
 </form>
-
+@if(data.id == userID){ 
 <div class="flex flex-row w-full items-center justify-center  ">
     <button (click)="editThisData()"
-        class="m-2 mr-2 flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-700 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
+        class="m-2 mr-2 flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
         <!-- Editar -->
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="size-6">
@@ -24,7 +27,7 @@
         </svg>
     </button>
     <button (click)="onDelete()"
-        class="flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-700 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
+        class="flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
         <!-- Eliminar -->
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="size-6">
@@ -33,3 +36,6 @@
         </svg>
     </button>
 </div>
+} @else {
+
+}
