@@ -4,16 +4,26 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { getUnidades } from '../../../api/unidades.service';
 import { getBancos } from '../../../api/bancos.service';
 import { createDeposito } from '../../../api/deposito.service';
+import { getFormularios } from '../../../api/formulario.service';
 import Swal from 'sweetalert2';
 
 type Unidad = {
   id: number
   unidad: string
+  fondoUnico: boolean
+  verificaciones: boolean
+  
 }
 
 type Banco = {
   id: number
   banco: string
+}
+
+type Formulario = {
+  id: number
+  formulario: string
+  importe: number
 }
 
 @Component({
@@ -26,13 +36,15 @@ export class AgregarDepositoComponent {
   bancos: Banco[] = []
   mostrarOpciones = false; // Variable para controlar la visibilidad de las opcione
   opcionesFiltradas: Unidad[] = this.unidades; // Inicialmente mostrar todas las opciones
-
+  modoUnidadVerificaciones = false; // Variable para controlar el modo de verificación de unidades
+ tiposFormularios: Formulario[] = []
   form: FormGroup = new FormGroup({
     NroDeposito: new FormControl('', [Validators.required]),
     Fecha: new FormControl('', [Validators.required]),
     PeriodoArqueo: new FormControl('', [Validators.required]),
     Unidad: new FormControl('', [Validators.required]),
     Banco: new FormControl('', [Validators.required]),
+    TipoFormulario: new FormControl('', [Validators.required]),
     Cuenta: new FormControl('', [Validators.required]),
     Boleta: new FormControl('', [Validators.required]),
     Importe: new FormControl('', [Validators.required]),
@@ -41,6 +53,7 @@ export class AgregarDepositoComponent {
   ngOnInit() {
     this.getUnidades()
     this.getBancos()
+    this.fetchFormularios()
   }
 
   getUnidades() {
@@ -55,6 +68,24 @@ export class AgregarDepositoComponent {
     getBancos().then((response) => {
       this.bancos = response
     })
+  }
+
+  fetchFormularios() {  
+    getFormularios().then((response) => {
+      this.tiposFormularios = response
+      console.log(this.tiposFormularios)
+    })
+  }
+
+
+  cambiarModoUnidadVerificaciones() {
+    this.modoUnidadVerificaciones = !this.modoUnidadVerificaciones; // Cambia el modo de unidad
+    // Haz que las unidades solo muestren verificaciones = true
+    if (this.modoUnidadVerificaciones) {
+      this.unidades = this.unidades.filter(unidad => unidad.verificaciones == true);
+    } else {
+      this.getUnidades(); // Vuelve a cargar todas las unidades
+    }
   }
 
   preventScroll(event: Event) {

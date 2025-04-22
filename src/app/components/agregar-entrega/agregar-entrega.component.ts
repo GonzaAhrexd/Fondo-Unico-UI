@@ -11,11 +11,13 @@ import { getUnidades } from '../../api/unidades.service';
 import { UserService } from '../../api/user.service';
 import { FormsModule } from '@angular/forms'; 
 
-
+import { getCantidadActual, setRegistroEntrega } from '../../api/entregas-registro.service'; // Importa la función getCantidadActual
 
 type Unidad = {
   id: number
   unidad: string
+  fondoUnico: boolean
+  verificaciones: boolean
 }
 
 @Component({
@@ -38,6 +40,17 @@ export class AgregarEntregaComponent implements OnInit {
   opcionesFiltradas: Unidad[] = this.unidades; // Inicialmente mostrar todas las opciones
   data: any = []; // Variable para almacenar los formularios
 
+  modoUnidadVerificaciones = false; // Variable para controlar el modo de unidad 
+
+  cambiarModoUnidadVerificaciones() {
+    this.modoUnidadVerificaciones = !this.modoUnidadVerificaciones; // Cambia el modo de unidad
+    // Haz que las unidades solo muestren verificaciones = true
+    if (this.modoUnidadVerificaciones) {
+      this.unidades = this.unidades.filter(unidad => unidad.verificaciones == true);
+    } else {
+      this.fetchUnidades(); // Vuelve a cargar todas las unidades
+    }
+  }
 
   // Formulario principal con FormArray para los renglones
   form: FormGroup = new FormGroup({
@@ -76,7 +89,7 @@ export class AgregarEntregaComponent implements OnInit {
     const desde = renglon.get('Desde')?.value;
     const hasta = renglon.get('Hasta')?.value;
     if (desde && hasta) {
-      renglon.get('Cantidad')?.setValue(hasta - desde);
+      renglon.get('Cantidad')?.setValue((hasta - desde) + 1);
     }
   }
 
@@ -171,6 +184,23 @@ onKeydown(event: KeyboardEvent) {
       if (result.isConfirmed) {
         const formData = this.form.getRawValue(); // getRawValue() incluye los campos deshabilitados
         await sendEntrega(formData)
+        
+
+        for(const renglon of formData.renglonesEntregas) {
+          
+        const ultimoValor = await getCantidadActual(formData, renglon); // Llama a la función getCantidadActual con la fecha del formulario
+        
+          console.log(ultimoValor)
+        const RegistrarEntrega = {
+          Unidad: formData.Unidad,
+          Fecha: formData.Fecha,
+          TipoEntrega: renglon.TipoFormulario,
+          cantidadActual: renglon.Cantidad + ultimoValor, // Sumar la cantidad actual a la cantidad ingresada
+        }
+
+        await setRegistroEntrega(RegistrarEntrega); // Envía el objeto al backend
+
+      }
         Swal.fire({
           title: 'Entrega enviada',
           icon: 'success',

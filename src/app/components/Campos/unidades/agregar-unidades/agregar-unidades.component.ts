@@ -13,6 +13,8 @@ export class AgregarUnidadesComponent {
     new FormGroup(
       {
         Unidad: new FormControl('', [Validators.required]),
+        FondoUnico: new FormControl(false, [Validators.required]),
+        Verificaciones: new FormControl(false, [Validators.required]),
       })
   )
 

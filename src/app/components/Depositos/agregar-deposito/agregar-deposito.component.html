@@ -10,6 +10,19 @@
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
         <span class="flex font-medium ml-4"> Unidad </span>
         <div class="w-full max-w-full relative overflow-hidden" #searchBox>
+            <div (click)="cambiarModoUnidadVerificaciones()" class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2">
+                {{modoUnidadVerificaciones ? "Mostrar todas las unidades" : "Mostrar unidades de verificaciones"}}
+              </div>
+            @if(modoUnidadVerificaciones) {
+              <select formControlName="Unidad" id="Unidad"
+              class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full pl-2 col-span-3 md:col-span-1">
+              <option value="0">Selecciona un tipo de formulario</option>
+              @for (unidad of unidades; track unidad.id) {
+                <option value="{{unidad.unidad}}">{{unidad.unidad}}</option>
+              }
+            </select>
+        
+            }@else {
             <input type="text" formControlName="Unidad" (input)="filtrarOpciones()" (focus)="mostrarOpciones = true"
                 class="relative border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 p-2 w-full"
                 placeholder="Busca una opción..." />
@@ -23,6 +36,7 @@
                 }
             </ul>
             }
+        }
         </div>
 
         <span class="flex font-medium ml-4"> Banco </span>
@@ -31,6 +45,14 @@
             <option value="0">Selecciona una opción</option>
             @for (banco of bancos; track banco.banco) {
             <option value="{{banco.banco}}">{{ banco.banco }}</option>
+            }
+        </select>
+        <span class="flex font-medium ml-4"> Tipo de Formulario </span>
+        <select formControlName="TipoFormulario" id="TipoFormulario"
+            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
+            <option value="0">Selecciona una opción</option>
+            @for (formulario of tiposFormularios; track formulario.formulario) {
+            <option value="{{formulario.formulario}}">{{ formulario.formulario }}</option>
             }
         </select>
         <span class="flex font-medium ml-4"> Cuenta </span>

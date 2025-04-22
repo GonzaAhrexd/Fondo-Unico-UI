@@ -3,8 +3,18 @@
         <span class="flex font-medium ml-4"> Unidad </span>
         <input formControlName="Unidad" id="Unidad" type="text"
             class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+            <span class="flex font-medium ml-4"> Disponibilidad </span>
+    <!-- Haz dos checkbox, uno de Fondo único y otro de Verificaciones -->
+        <div class="flex flex-row items-center justify-center">
+            <input formControlName="FondoUnico" id="FondoUnico" type="checkbox" class="m-2" />
+            <label for="FondoUnico">Fondo único</label>
 
-    </div>
+            <input formControlName="Verificaciones" id="Verificaciones" type="checkbox" class="m-2" />
+            <label for="Verificaciones">Verificaciones</label>
+            
+        </div>    
+        </div>
+
     <div class="flex flex-row items-center justify-center">
         <div class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-1/2 flex flex-row items-center justify-center mr-2"
             (click)="cancelar()">
@@ -16,3 +26,4 @@
         </div>
     </div>
 </form>
+
