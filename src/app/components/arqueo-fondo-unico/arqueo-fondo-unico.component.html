@@ -1,1 +1,69 @@
-<p>arqueo-fondo-unico works!</p>
+<form [formGroup]="form" action="" class="w-full">
+  <div class="flex flex-col w-full justify-center items-center">
+    <div class="flex flex-col w-full">
+      <span class="flex font-medium ml-4"> Desde </span>
+      <input formControlName="Desde" id="desde" type="date"
+        class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+    </div>
+    <div class="flex flex-col w-full">
+      <span class="flex font-medium ml-4"> Hasta </span>
+      <input formControlName="Hasta" id="hasta" type="date"
+        class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+    </div>
+    <span class="flex font-medium ml-4"> Unidad </span>
+    <div class="w-full max-w-full relative overflow-hidden" #searchBox>
+
+      <div (click)="cambiarModoUnidadVerificaciones()"
+        class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2">
+        {{modoUnidadVerificaciones ? "Mostrar todas las unidades" : "Mostrar unidades de verificaciones"}}
+      </div>
+      @if(modoUnidadVerificaciones) {
+      <select formControlName="Unidad" id="Unidad"
+        class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full pl-2 col-span-3 md:col-span-1">
+        <option value="0">Selecciona un tipo de formulario</option>
+        @for (unidad of unidades; track unidad.id) {
+        <option value="{{unidad.unidad}}">{{unidad.unidad}}</option>
+        }
+      </select>
+
+      }@else {
+      <div>
+        <input type="text" formControlName="Unidad" (input)="filtrarOpciones()" (focus)="mostrarOpciones = true"
+          class="relative border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 p-2 w-full"
+          placeholder="Busca una opción..." />
+        @if (mostrarOpciones) {
+        <ul
+          class="relative max-w-full z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto">
+          @for (opcion of opcionesFiltradas; track opcion) {
+          <li (click)="seleccionar(opcion.unidad)" class="p-2 cursor-pointer hover:bg-blue-100">
+            {{ opcion.unidad }}
+          </li>
+          }
+        </ul>
+        }
+      </div>
+      }
+      <span class="flex font-medium ml-4"> Tipo de Formulario </span>
+      <select formControlName="TipoFormulario" id="TipoFormulario"
+        class="border open-sans border-gray-300 bg-gray-100 rounded-md h-10 xl:h-8 2xl:h-10 my-2 w-full pl-2 col-span-3 md:col-span-1">
+        <option value="0">Selecciona un tipo de formulario</option>
+        @for (formulario of opcionesFormularios; track formulario.id) {
+        <option value="{{formulario.formulario}}">{{formulario.formulario}}</option>
+        }
+      </select>
+      <div class="flex flex-col w-full">
+        <span class="flex font-medium ml-4"> Cantidad existente </span>
+        <input formControlName="CantidadUtilizada" id="CantidadUtilizada" type="number" min="0"
+            class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
+    </div>
+      <!-- Agrega un botón -->
+      <div class="flex flex-col w-full mt-4">
+        <button type="submit" (click)="generarArqueoFondoUnico()" 
+          class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2">
+          Generar Arqueo
+        </button>
+      </div>
+
+    </div>
+  </div>
+</form>

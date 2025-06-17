@@ -18,6 +18,15 @@
       <option value="{{unidad.unidad}}">{{ unidad.unidad }}</option>
       }
     </select>
+    <span class="flex font-medium ml-4"> Tipo de Formulario </span>
+    <select formControlName="TipoFormulario" id="TipoFormulario"
+    class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">
+    <option value="0">Selecciona un tipo de formulario</option>
+      @for (form of formularios; track form.id) {
+      <option value="{{form.formulario}}">{{form.formulario}}</option>
+      }
+    </select>
+
     <span class="flex font-medium ml-4"> Banco </span>
     <select formControlName="Banco" id="Banco"
       class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2">

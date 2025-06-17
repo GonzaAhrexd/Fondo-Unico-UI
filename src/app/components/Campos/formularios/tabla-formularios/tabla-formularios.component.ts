@@ -100,7 +100,7 @@ export class FormularioTableComponent {
   editThisRow(row: any) {
     // Haz un menú de editado modal utilizando Swal
     Swal.fire({
-      title: 'Editando Marca',
+      title: 'Editando Formulario',
       html: `
       <div class="flex flex-col">
       <span>Formulario</span>
@@ -117,12 +117,11 @@ export class FormularioTableComponent {
       if (result.isConfirmed) {
         const formulario = (document.getElementById('formulario') as HTMLInputElement).value
         const importe = (document.getElementById('importe') as HTMLInputElement).value
-        const tipoVehiculo = (document.getElementById('tipoVehiculo') as HTMLSelectElement).value
+
         const values = {
           id: row.original.id,
           formulario: formulario,
           importe: importe,
-          tipoVehiculo: tipoVehiculo
         }
 
         updateFormulario(values)

@@ -19,7 +19,6 @@ import { cambiarAnuladoDeVerificacion } from '../../../api/verificaciones.servic
   standalone: true,
   imports: [ FlexRenderDirective ],
  templateUrl: './table.component.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 // Definimos la clase del componente

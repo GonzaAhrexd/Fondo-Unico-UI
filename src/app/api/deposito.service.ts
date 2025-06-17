@@ -1,5 +1,13 @@
 import axios from './axios'
 
+
+type TotalDeposito = {
+    Desde: Date,
+    Hasta: Date,
+    Unidad: string,
+    TipoFormulario: string,
+}  
+
 export const getDepositos = async () => {
     const response = await axios.get('/depositos')
     return response.data
@@ -36,6 +44,11 @@ export const updateDeposito = async (data: any) => {
 
 export const deleteDeposito = async (id: number) => {
     const response = await axios.delete(`/depositos/${id}`)
+    return response.data
+}
+
+export const getTotalDepositos = async (value: TotalDeposito) => {
+    const response = await axios.get(`/depositos/total-por-fecha/${value.Desde}/${value.Hasta}/${value.Unidad}/${value.TipoFormulario}`)
     return response.data
 }
 

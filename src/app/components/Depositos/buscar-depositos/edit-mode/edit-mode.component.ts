@@ -9,6 +9,13 @@ import { getBancos } from '../../../../api/bancos.service'
 import { updateDeposito } from '../../../../api/deposito.service';
 import { deleteDeposito } from '../../../../api/deposito.service';
 import { UserService } from '../../../../api/user.service';
+import { getFormularios } from '../../../../api/formulario.service';
+
+type Formulario = {
+  id: number
+  formulario: string
+  importe: number
+}
 
 @Component({
   selector: 'EditModeDeposito',
@@ -23,12 +30,14 @@ export class EditModeComponentDeposito {
   @Input() defaultData:any = {}
   unidades:any = []
   bancos:any = []
+  formularios:Formulario[] = []
 
   form: FormGroup = new FormGroup({
     Id: new FormControl(''),
     NroDeposito: new FormControl(''),
     Fecha: new FormControl('', [Validators.required]),
     PeriodoArqueo: new FormControl('', [Validators.required]),
+    TipoFormulario: new FormControl('', [Validators.required]),
     Unidad: new FormControl('', [Validators.required]),
     Banco: new FormControl('', [Validators.required]),
     Cuenta: new FormControl('', [Validators.required]),
@@ -42,12 +51,14 @@ export class EditModeComponentDeposito {
 
     this.fetchUnidades()
     this.fetchBancos()
-
+    this.fetchFormularios()
+    console.log(this.defaultData)
     this.form.patchValue({
       Id: this.defaultData.id,
       NroDeposito: this.defaultData.nroDeposito,
       Fecha: this.formatDate(this.defaultData.fecha),
       PeriodoArqueo: this.formatDate(this.defaultData.periodoArqueo),
+      TipoFormulario: this.defaultData.tipoFormulario,
       Unidad: this.defaultData.unidad,
       Banco: this.defaultData.banco,
       Cuenta: this.defaultData.cuenta,
@@ -74,6 +85,13 @@ export class EditModeComponentDeposito {
         this.bancos = data
       })
     }
+
+    fetchFormularios(){
+      getFormularios().then((data) => {
+        this.formularios = data
+      })
+    }
+
 
     // Función para formatear la fecha
   formatDate(date: string | Date): string {

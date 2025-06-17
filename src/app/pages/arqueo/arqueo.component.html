@@ -5,14 +5,11 @@
         @for(datos of opcionesDatos; track datos.texto){
         <CardActions texto="{{datos.texto}}" [SVG]="datos.SVG" (opcion)="getClickedSection($event)" />
         }
+    </div>
+
+
     @if(opcionSeleccionada == "Verificaciones"){
-        <app-arqueo-fondo-unico />
+    <app-arqueo-verificaciones />
     }@else if(opcionSeleccionada == "Fondo Único"){
-        <app-arqueo-verificaciones />
+    <app-arqueo-fondo-unico />
     }
-
-
-    
-
-
-</div>

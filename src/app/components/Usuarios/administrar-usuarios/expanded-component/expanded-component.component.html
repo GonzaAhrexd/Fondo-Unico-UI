@@ -15,7 +15,7 @@
 }
 
 </form>
-@if(data.id == userID){ 
+@if(data.id != userID){ 
 <div class="flex flex-row w-full items-center justify-center  ">
     <button (click)="editThisData()"
         class="m-2 mr-2 flex flex-col items-center jsutify-center disabled:bg-gray-700 bg-sky-900 hover:bg-sky-800 rounded-lg w-3/10 text-white font-bold py-2 px-4 ">
@@ -36,6 +36,4 @@
         </svg>
     </button>
 </div>
-} @else {
-
-}
+} 

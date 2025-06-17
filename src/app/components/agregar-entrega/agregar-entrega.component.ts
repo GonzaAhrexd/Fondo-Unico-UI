@@ -190,7 +190,6 @@ onKeydown(event: KeyboardEvent) {
           
         const ultimoValor = await getCantidadActual(formData, renglon); // Llama a la función getCantidadActual con la fecha del formulario
         
-          console.log(ultimoValor)
         const RegistrarEntrega = {
           Unidad: formData.Unidad,
           Fecha: formData.Fecha,
