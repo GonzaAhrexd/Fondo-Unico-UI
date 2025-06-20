@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { getFormularios } from '../../api/formulario.service';
 import { getTotalDepositos } from '../../api/deposito.service';
 import { getCantidadActual } from '../../api/entregas-registro.service';
-
+import { CommonModule } from '@angular/common';
 
 type Unidad = {
   id: number
@@ -16,7 +16,7 @@ type Unidad = {
 
 @Component({
   selector: 'app-arqueo-fondo-unico',
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule],
   templateUrl: './arqueo-fondo-unico.component.html'
 })
 export class ArqueoFondoUnicoComponent {
@@ -26,8 +26,9 @@ export class ArqueoFondoUnicoComponent {
   data: any = []; // Variable para almacenar los formularios
   mostrarOpciones: boolean = false // Variable para mostrar/ocultar las opciones
   opcionesFormularios: any[] = []; // Variable para almacenar las opciones de formularios
-  
 
+  mostrarResultados = false
+  ShowArqueo: any = {}
   // Formulario principal con FormArray para los renglones
   form: FormGroup = new FormGroup({
     Desde: new FormControl('', Validators.required),
@@ -40,23 +41,30 @@ export class ArqueoFondoUnicoComponent {
 
   async generarArqueoFondoUnico() {
     const totalDeposito = await getTotalDepositos(this.form.value); // Llama a la función para obtener el total de depósitos
-    
+
     const totalEntrega = await getCantidadActual(this.form.value, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de depósito 
-    
+
     // Calcula el total restando el total de depósitos y la cantidad actual de entrega de depósito
     const total = totalEntrega - this.form.value.CantidadUtilizada;
-  
+
     const resultado = (this.opcionesFormularios.find(item => item.formulario === this.form.value.TipoFormulario)).importe;
     console.log(resultado)
-  const Arqueo = {
-    TotalSobrante: total, 
-    TotalDeposito: totalDeposito, // Total de depósitos
-    TotalEntrega: totalEntrega, // Total de entrega de depósito 
-    ValorRegistrado: this.form.value.CantidadUtilizada * resultado, // Valor registrado
+    const Arqueo = {
+      Desde: this.form.value.Desde,
+      Hasta: this.form.value.Hasta,
+      Unidad: this.form.value.Unidad,
+      TipoFormulario: this.form.value.TipoFormulario,
+      TotalSobrante: total,
+      TotalDeposito: totalDeposito, // Total de depósitos
+      TotalEntrega: totalEntrega, // Total de entrega de depósito 
+      ValorRegistrado: this.form.value.CantidadUtilizada * resultado, // Valor registrado
+      Coincidente: (this.form.value.CantidadUtilizada * resultado) == totalDeposito
+    }
 
-  }
+    this.ShowArqueo = Arqueo; // Asigna el resultado al objeto ShowArqueo
 
-  console.log(Arqueo)
+    this.mostrarResultados = true; // Muestra los resultados
+    // console.log(Arqueo)
 
   }
 
