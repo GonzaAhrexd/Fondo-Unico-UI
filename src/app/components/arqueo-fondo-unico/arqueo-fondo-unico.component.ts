@@ -1,11 +1,16 @@
+// Angular Imports
 import { Component } from '@angular/core';
-import { getUnidades } from '../../api/unidades.service';
 import { ReactiveFormsModule, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+// Librerías
+import Swal from 'sweetalert2';
+// APIs
 import { getFormularios } from '../../api/formulario.service';
 import { getTotalDepositos } from '../../api/deposito.service';
 import { getCantidadActual } from '../../api/entregas-registro.service';
-import { CommonModule } from '@angular/common';
+import { getUnidades } from '../../api/unidades.service';
+import { sendArqueoFondoUnico } from '../../api/arqueo.service';
 
 type Unidad = {
   id: number
@@ -53,11 +58,12 @@ export class ArqueoFondoUnicoComponent {
       Desde: this.form.value.Desde,
       Hasta: this.form.value.Hasta,
       Unidad: this.form.value.Unidad,
-      TipoFormulario: this.form.value.TipoFormulario,
+      TipoDeFormulario: this.form.value.TipoFormulario,
+      CantidadUtilizada: this.form.value.CantidadUtilizada,
       TotalSobrante: total,
-      TotalDeposito: totalDeposito, // Total de depósitos
-      TotalEntrega: totalEntrega, // Total de entrega de depósito 
-      ValorRegistrado: this.form.value.CantidadUtilizada * resultado, // Valor registrado
+      TotalDepositos: totalDeposito, // Total de depósitos
+      TotalEntregado: totalEntrega, // Total de entrega de depósito 
+      Valor: this.form.value.CantidadUtilizada * resultado, // Valor registrado
       Coincidente: (this.form.value.CantidadUtilizada * resultado) == totalDeposito
     }
 
@@ -121,4 +127,33 @@ export class ArqueoFondoUnicoComponent {
     });
   }
 
+  guardarArqueo() {
+    Swal.fire({
+      title: '¿Está seguro de que desea guardar el arqueo?',
+      text: "¡No podrá deshacer esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0C4A6E',
+      cancelButtonColor: '#FF554C',
+      confirmButtonText: 'Sí, guardar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Aquí puedes agregar la lógica para guardar el arqueo 
+     
+        await sendArqueoFondoUnico(this.ShowArqueo)
+        Swal.fire(
+          {
+            title: 'Arqueo guardado',
+            text: 'El arqueo se ha guardado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#0C4A6E'
+          }
+        )
+      }
+    })
+  }
+
+  imprimirArqueo() {
+
+  }
 }
