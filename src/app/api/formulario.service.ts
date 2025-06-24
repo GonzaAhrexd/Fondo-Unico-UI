@@ -45,3 +45,15 @@ export const deleteFormulario = async (id: string) => {
         console.error(error)
     }
     }
+
+export const getValorFormularioPorFecha = async (desde: string, hasta: string, tipoFormulario: string) => {
+    try {
+        console.log(desde, hasta, tipoFormulario)
+
+        const response = await axios.get(`/Formularios/FiltrarHistorial/${tipoFormulario}/${desde}/${hasta}`)
+        
+        return response.data.importe
+    } catch (error) {
+        console.error(error)
+    }
+}

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 // Librerías
 import Swal from 'sweetalert2';
 // APIs
-import { getFormularios } from '../../api/formulario.service';
+import { getFormularios, getValorFormularioPorFecha  } from '../../api/formulario.service';
 import { getTotalDepositos } from '../../api/deposito.service';
 import { getCantidadActual } from '../../api/entregas-registro.service';
 import { getUnidades } from '../../api/unidades.service';
@@ -45,15 +45,14 @@ export class ArqueoFondoUnicoComponent {
 
 
   async generarArqueoFondoUnico() {
+    // Buscamos de la BD estos valores
     const totalDeposito = await getTotalDepositos(this.form.value); // Llama a la función para obtener el total de depósitos
-
-    const totalEntrega = await getCantidadActual(this.form.value, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de depósito 
+    const totalEntregaExistente = await getCantidadActual(this.form.value, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de entrega 
+    const valorFormulario = await getValorFormularioPorFecha(this.form.value.Desde,  this.form.value.Hasta, this.form.value.TipoFormulario); // Busca por fecha el valor del formulario
 
     // Calcula el total restando el total de depósitos y la cantidad actual de entrega de depósito
-    const total = totalEntrega - this.form.value.CantidadUtilizada;
+    const total = totalEntregaExistente - this.form.value.CantidadUtilizada;
 
-    const resultado = (this.opcionesFormularios.find(item => item.formulario === this.form.value.TipoFormulario)).importe;
-    console.log(resultado)
     const Arqueo = {
       Desde: this.form.value.Desde,
       Hasta: this.form.value.Hasta,
@@ -62,15 +61,13 @@ export class ArqueoFondoUnicoComponent {
       CantidadUtilizada: this.form.value.CantidadUtilizada,
       TotalSobrante: total,
       TotalDepositos: totalDeposito, // Total de depósitos
-      TotalEntregado: totalEntrega, // Total de entrega de depósito 
-      Valor: this.form.value.CantidadUtilizada * resultado, // Valor registrado
-      Coincidente: (this.form.value.CantidadUtilizada * resultado) == totalDeposito
+      TotalEntregado: totalEntregaExistente, // Total de entrega de depósito 
+      Valor: this.form.value.CantidadUtilizada * valorFormulario, // Valor registrado
+      Coincidente: (this.form.value.CantidadUtilizada * valorFormulario) == totalDeposito
     }
 
     this.ShowArqueo = Arqueo; // Asigna el resultado al objeto ShowArqueo
-
     this.mostrarResultados = true; // Muestra los resultados
-    // console.log(Arqueo)
 
   }
 
