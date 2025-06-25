@@ -52,3 +52,9 @@ export const getTotalDepositos = async (value: TotalDeposito) => {
     return response.data
 }
 
+export const getCantidadDepositos = async (value: TotalDeposito) => {
+    const response = await axios.get(`/depositos/cantidad-por-fecha/${value.Desde}/${value.Hasta}/${value.Unidad}/${value.TipoFormulario}`)
+    return response.data
+}
+
+

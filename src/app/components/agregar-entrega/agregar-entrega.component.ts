@@ -268,8 +268,7 @@ onKeydown(event: KeyboardEvent) {
     pdf.text('Firma Responsable de Entrega', 130, finalY + 5);
 
 
-    // Descargar PDF
-    // pdf.save('documento.pdf');
+  
     const pdfUrl = pdf.output('bloburl');
     window.open(pdfUrl, '_blank');
 

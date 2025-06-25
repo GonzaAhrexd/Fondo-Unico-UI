@@ -6,11 +6,14 @@ import { CommonModule } from '@angular/common';
 // Librerías
 import Swal from 'sweetalert2';
 // APIs
-import { getFormularios, getValorFormularioPorFecha  } from '../../api/formulario.service';
-import { getTotalDepositos } from '../../api/deposito.service';
+import { getFormularios, getValorFormularioPorFecha } from '../../api/formulario.service';
+import { getTotalDepositos, getCantidadDepositos } from '../../api/deposito.service';
 import { getCantidadActual } from '../../api/entregas-registro.service';
 import { getUnidades } from '../../api/unidades.service';
 import { sendArqueoFondoUnico } from '../../api/arqueo.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 type Unidad = {
   id: number
@@ -33,7 +36,7 @@ export class ArqueoFondoUnicoComponent {
   opcionesFormularios: any[] = []; // Variable para almacenar las opciones de formularios
 
   mostrarResultados = false
-  ShowArqueo: any = {}
+  showArqueo: any = {}
   // Formulario principal con FormArray para los renglones
   form: FormGroup = new FormGroup({
     Desde: new FormControl('', Validators.required),
@@ -48,7 +51,13 @@ export class ArqueoFondoUnicoComponent {
     // Buscamos de la BD estos valores
     const totalDeposito = await getTotalDepositos(this.form.value); // Llama a la función para obtener el total de depósitos
     const totalEntregaExistente = await getCantidadActual(this.form.value, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de entrega 
-    const valorFormulario = await getValorFormularioPorFecha(this.form.value.Desde,  this.form.value.Hasta, this.form.value.TipoFormulario); // Busca por fecha el valor del formulario
+    const valorFormulario = await getValorFormularioPorFecha(this.form.value.Desde, this.form.value.Hasta, this.form.value.TipoFormulario); // Busca por fecha el valor del formulario
+    const cantidadDepositos = await getCantidadDepositos({
+      Desde: this.form.value.Desde,
+      Hasta: this.form.value.Hasta,
+      Unidad: this.form.value.Unidad,
+      TipoFormulario: this.form.value.TipoFormulario
+    })
 
     // Calcula el total restando el total de depósitos y la cantidad actual de entrega de depósito
     const total = totalEntregaExistente - this.form.value.CantidadUtilizada;
@@ -60,13 +69,15 @@ export class ArqueoFondoUnicoComponent {
       TipoDeFormulario: this.form.value.TipoFormulario,
       CantidadUtilizada: this.form.value.CantidadUtilizada,
       TotalSobrante: total,
+      CantidadDepositos: cantidadDepositos,
       TotalDepositos: totalDeposito, // Total de depósitos
       TotalEntregado: totalEntregaExistente, // Total de entrega de depósito 
+      TotalEntregadoImporte: totalEntregaExistente * valorFormulario, // Total de entrega de depósito en importe
       Valor: this.form.value.CantidadUtilizada * valorFormulario, // Valor registrado
       Coincidente: (this.form.value.CantidadUtilizada * valorFormulario) == totalDeposito
     }
 
-    this.ShowArqueo = Arqueo; // Asigna el resultado al objeto ShowArqueo
+    this.showArqueo = Arqueo; // Asigna el resultado al objeto showArqueo
     this.mostrarResultados = true; // Muestra los resultados
 
   }
@@ -136,8 +147,8 @@ export class ArqueoFondoUnicoComponent {
     }).then(async (result) => {
       if (result.isConfirmed) {
         // Aquí puedes agregar la lógica para guardar el arqueo 
-     
-        await sendArqueoFondoUnico(this.ShowArqueo)
+
+        await sendArqueoFondoUnico(this.showArqueo)
         Swal.fire(
           {
             title: 'Arqueo guardado',
@@ -151,6 +162,172 @@ export class ArqueoFondoUnicoComponent {
   }
 
   imprimirArqueo() {
+    const desdeDate = new Date(this.showArqueo.Desde + 'T12:00:00'); // Añade una hora al mediodía local
+    const hastaDate = new Date(this.showArqueo.Hasta + 'T12:00:00'); // Añade una hora al mediodía local
+
+
+
+    const doc = new jsPDF();
+    let y = 10;
+
+    // --- Encabezado ---
+    doc.setFontSize(10);
+    // Agrega la imagen que está en /public/Escudo_Policia_Chaco_Transparente.png
+    const img = new Image();
+    img.src = './Escudo_Policia_Chaco_Transparente.png';
+    doc.addImage(img, 'PNG', 15, 5, 18, 18); // Escudo más pequeño y alineado
+
+    // Encabezado alineado a la derecha del escudo
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('JEFATURA DE POLICIA DEL CHACO', 36, 12);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Dirección de Administración', 36, 17);
+    doc.text('Sección Fondo Único Policial', 36, 22);
+
+    doc.text(`Fecha de Impresión: ${new Date().toLocaleDateString('es-AR')}`, 150, 10);
+    doc.text('Nro. Página: 1', 150, 15);
+
+    y = 35; // Reiniciar Y para la siguiente sección
+
+    // --- Título del Informe ---
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INFORME DE ARQUEO', doc.internal.pageSize.getWidth() / 2, y, { align: 'center' });
+    y += 10;
+    doc.setFont('helvetica', 'normal'); // Restablecer estilo de fuente
+
+    // --- Unidad y Período ---
+   
+    
+
+    // --- Tabla de Detalles (usando jspdf-autotable) ---
+    const tableRows = [
+      [
+        this.showArqueo.TipoDeFormulario, // <--- Formulario
+        this.showArqueo.CantidadUtilizada, // <--- Valores entregados - Cantidad
+        this.showArqueo.Valor.toFixed(2), // <--- Valores entregados - Importe
+        '0.00', // Saldo valores arqueo anterior - importe
+        '0.00', // Saldo valores arqueo anterior - saldo
+        this.showArqueo.TotalEntregado, // <--- Existencia actual - Cantidad
+        this.showArqueo.TotalEntregadoImporte.toFixed(2) // <--- Existencia actual - Importe
+      ]
+    ];
+
+
+
+    let finalYAfterTable = y;
+
+    autoTable(doc, {
+      startY: y,
+      head: [
+        [
+          { content: 'Formulario', rowSpan: 2 },
+          { content: 'Valores Entregados', colSpan: 2, styles: { halign: 'center' } },
+          { content: 'Saldo Valores Arqueo Anterior', colSpan: 2, styles: { halign: 'center' } },
+          { content: 'Existencia Actual', colSpan: 2, styles: { halign: 'center' } }
+        ],
+        ['Cantidad', 'Importe', 'Importe', 'Saldo', 'Existencia Act.', 'Importe']
+      ],
+      body: [...tableRows],
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+        halign: 'center'
+      },
+      headStyles: {
+        fillColor: [230, 230, 230],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        halign: 'center'
+      },
+      didParseCell: function (data: any) {
+        if (data.row.raw[0] === 'TOTALES') {
+          data.cell.styles.fontStyle = 'bold';
+        }
+      },
+      didDrawPage: (data: any) => {
+        finalYAfterTable = data.cursor.y;
+      }
+    });
+
+    y = finalYAfterTable + 15;
+
+    // --- Sección "Informe Final" ---
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Informe Final:', 15, y);
+    doc.setFont('helvetica', 'normal');
+    y += 10;
+
+    const boxWidth = 60;
+    const boxHeight = 35;
+    const startX = 15;
+    const spacing = 10;
+
+    // Ajustar el ancho de las cajas para que todo entre en la página
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const totalSpacing = 2 * spacing;
+    const numBoxes = 3;
+    const availableWidth = pageWidth - 2 * margin - totalSpacing;
+    const adjustedBoxWidth = availableWidth / numBoxes;
+    // Ajustar las cajas para que estén una debajo de la otra y ocupen todo el ancho disponible
+    const fullBoxWidth = pageWidth - 2 * margin;
+
+    // Caja 1: Depósitos Efectuados
+    doc.rect(startX, y, fullBoxWidth, boxHeight);
+    doc.setFontSize(12);
+    doc.text('Depósitos Efectuados', startX + 5, y + 8, { align: 'left' });
+    doc.setFontSize(10);
+    doc.text('Cantidad Depósitos:', startX + 5, y + 20, { align: 'left' });
+    doc.text(`${this.showArqueo.CantidadDepositos}`, startX + fullBoxWidth - 5, y + 20, { align: 'right' });
+    doc.text('Importe Depositado:', startX + 5, y + 28, { align: 'left' });
+    doc.text(`$${this.showArqueo.TotalDepositos.toFixed(2)}`, startX + fullBoxWidth - 5, y + 28, { align: 'right' });
+
+    y += boxHeight + spacing;
+
+    // Caja 2: Entregas Efectuadas
+    doc.rect(startX, y, fullBoxWidth, boxHeight);
+    doc.setFontSize(12);
+    doc.text('Entregas Efectuadas', startX + 5, y + 8, { align: 'left' });
+    doc.setFontSize(10);
+    doc.text('Importe Valores Entregados:', startX + 5, y + 18, { align: 'left' });
+    doc.text(`$${this.showArqueo.TotalEntregadoImporte.toFixed(2)}`, startX + fullBoxWidth - 5, y + 18, { align: 'right' });
+    doc.text('Imp. Saldo Valores Arq. Anterior:', startX + 5, y + 23, { align: 'left' });
+    doc.text(`$${0}`, startX + fullBoxWidth - 5, y + 23, { align: 'right' });
+    doc.text('Importe Valores Anulados:', startX + 5, y + 28, { align: 'left' });
+    doc.text(`$${0}`, startX + fullBoxWidth - 5, y + 28, { align: 'right' });
+
+    const totalADepositarCalculated = this.showArqueo.TotalEntregadoImporte;
+    doc.text('Total a Depositar:', startX + 5, y + 33, { align: 'left' });
+    doc.text(`$${totalADepositarCalculated.toFixed(2)}`, startX + fullBoxWidth - 5, y + 33, { align: 'right' });
+
+    y += boxHeight + spacing;
+
+    // Caja 3: Resumen de Totales y Diferencia
+    doc.rect(startX, y, fullBoxWidth, boxHeight);
+    doc.setFontSize(12);
+    doc.text('Resumen de Totales y Diferencia', startX + 5, y + 8, { align: 'left' });
+    doc.setFontSize(10);
+    doc.text('Total a Depositar:', startX + 5, y + 18, { align: 'left' });
+    doc.text(`$${totalADepositarCalculated.toFixed(2)}`, startX + fullBoxWidth - 5, y + 18, { align: 'right' });
+
+    doc.text('Total Depositado:', startX + 5, y + 24, { align: 'left' });
+    doc.text(`$${this.showArqueo.TotalDepositos.toFixed(2)}`, startX + fullBoxWidth - 5, y + 24, { align: 'right' });
+
+    const diferencia = totalADepositarCalculated - this.showArqueo.TotalDepositos;
+    doc.text('Diferencia:', startX + 5, y + 30, { align: 'left' });
+    doc.text(`$${diferencia.toFixed(2)}`, startX + fullBoxWidth - 5, y + 30, { align: 'right' });
+
+      const pdfUrl = doc.output('bloburl');
+    window.open(pdfUrl, '_blank');
+
 
   }
 }

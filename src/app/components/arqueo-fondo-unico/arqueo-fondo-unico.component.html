@@ -84,42 +84,42 @@
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Desde</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            {{ ShowArqueo.Desde | date: 'dd/MM/yyyy' }}
+            {{ showArqueo.Desde | date: 'dd/MM/yyyy' }}
           </td>
         </tr>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Hasta</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            {{ ShowArqueo.Hasta | date: 'dd/MM/yyyy' }}
+            {{ showArqueo.Hasta | date: 'dd/MM/yyyy' }}
           </td>
         </tr>
 
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Unidad</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ ShowArqueo.Unidad }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.Unidad }}</td>
         </tr>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Total entregado</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ ShowArqueo.TotalEntregado }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalEntregado }}</td>
         </tr>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Total sobrante</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ ShowArqueo.TotalSobrante }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalSobrante }}</td>
         </tr>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Total de depósitos</td>
           <td [ngClass]="{
-            'bg-green-500': ShowArqueo.Coincidente,
-            'bg-red-500 text-white': !ShowArqueo.Coincidente
-            }" class="px-6 py-4 whitespace-nowrap">{{ ShowArqueo.TotalDepositos }}</td>
+            'bg-green-500': showArqueo.Coincidente,
+            'bg-red-500 text-white': !showArqueo.Coincidente
+            }" class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalDepositos }}</td>
         </tr>
 
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Valor</td>
           <td [ngClass]="{
-            'bg-green-500': ShowArqueo.Coincidente,
-            'bg-red-500 text-white': !ShowArqueo.Coincidente
-            }" class="px-6 py-4 whitespace-nowrap">{{ ShowArqueo.Valor }}</td>
+            'bg-green-500': showArqueo.Coincidente,
+            'bg-red-500 text-white': !showArqueo.Coincidente
+            }" class="px-6 py-4 whitespace-nowrap">{{ showArqueo.Valor }}</td>
         </tr>
       </tbody>
     </table>
