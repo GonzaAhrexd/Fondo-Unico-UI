@@ -43,15 +43,21 @@ export class ArqueoFondoUnicoComponent {
     Hasta: new FormControl('', Validators.required),
     Unidad: new FormControl('', Validators.required),
     TipoFormulario: new FormControl('', Validators.required),
-    CantidadUtilizada: new FormControl('', Validators.required),
+    CantidadRestante: new FormControl('', Validators.required),
   });
 
 
   async generarArqueoFondoUnico() {
     // Buscamos de la BD estos valores
     const totalDeposito = await getTotalDepositos(this.form.value); // Llama a la función para obtener el total de depósitos
-    const totalEntregaExistente = await getCantidadActual(this.form.value, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de entrega 
+    const totalArqueoAnterior = await getCantidadActual(this.form.value.Desde, this.form.value.Unidad, this.form.value.TipoFormulario); // Llama a la función para obtener la cantidad actual de entrega de entrega 
+    const totalEntregaExistente = await getCantidadActual(this.form.value.Hasta, this.form.value.Unidad, this.form.value.TipoFormulario) - totalArqueoAnterior; // Llama a la función para obtener la cantidad actual de entrega de entrega 
+    
     const valorFormulario = await getValorFormularioPorFecha(this.form.value.Desde, this.form.value.Hasta, this.form.value.TipoFormulario); // Busca por fecha el valor del formulario
+    let posibleValorAnterior = await getValorFormularioPorFecha(this.form.value.Desde, this.form.value.Desde, this.form.value.TipoFormulario); // Busca por fecha el valor del formulario
+    posibleValorAnterior = posibleValorAnterior ? posibleValorAnterior : valorFormulario; // Si no hay valor anterior, asigna 0
+
+
     const cantidadDepositos = await getCantidadDepositos({
       Desde: this.form.value.Desde,
       Hasta: this.form.value.Hasta,
@@ -59,22 +65,33 @@ export class ArqueoFondoUnicoComponent {
       TipoFormulario: this.form.value.TipoFormulario
     })
 
-    // Calcula el total restando el total de depósitos y la cantidad actual de entrega de depósito
-    const total = totalEntregaExistente - this.form.value.CantidadUtilizada;
-
+    // Obtener la cantidad que tiene que depositar
+    // Para ello se debe calcular del (total entregado + lo que quedó del importe anterior) - lo que sobró
+    
+    const CantidadADepositar = ((totalEntregaExistente + totalArqueoAnterior) - this.form.value.CantidadRestante) * valorFormulario; // Cantidad a depositar
+    
     const Arqueo = {
+      // Detalles del arqueo
       Desde: this.form.value.Desde,
       Hasta: this.form.value.Hasta,
       Unidad: this.form.value.Unidad,
       TipoDeFormulario: this.form.value.TipoFormulario,
-      CantidadUtilizada: this.form.value.CantidadUtilizada,
-      TotalSobrante: total,
+      ValorFormulario: valorFormulario, // Valor del formulario
+      // Valores entregados
+      TotalEntregado: totalEntregaExistente, // Total de entrega de depósito 
+      ValorEntregado: totalEntregaExistente * valorFormulario, // Valor registrado
+      // Saldo valores arqueo anterior
+      ArqueoAnteriorCantidad: totalArqueoAnterior,
+      ArqueoAnteriorImporte: totalArqueoAnterior * posibleValorAnterior, // Saldo de arqueo anterior en importe
+      // Existencia actual
+      CantidadRestante: this.form.value.CantidadRestante,
+      TotalSobrante: this.form.value.CantidadRestante * valorFormulario,
+      // Depósitos efectuados
       CantidadDepositos: cantidadDepositos,
       TotalDepositos: totalDeposito, // Total de depósitos
-      TotalEntregado: totalEntregaExistente, // Total de entrega de depósito 
+      CantidadADepositar: CantidadADepositar,
       TotalEntregadoImporte: totalEntregaExistente * valorFormulario, // Total de entrega de depósito en importe
-      Valor: this.form.value.CantidadUtilizada * valorFormulario, // Valor registrado
-      Coincidente: (this.form.value.CantidadUtilizada * valorFormulario) == totalDeposito
+      Coincidente: CantidadADepositar == totalDeposito
     }
 
     this.showArqueo = Arqueo; // Asigna el resultado al objeto showArqueo
@@ -206,16 +223,14 @@ export class ArqueoFondoUnicoComponent {
     const tableRows = [
       [
         this.showArqueo.TipoDeFormulario, // <--- Formulario
-        this.showArqueo.CantidadUtilizada, // <--- Valores entregados - Cantidad
-        this.showArqueo.Valor.toFixed(2), // <--- Valores entregados - Importe
-        '0.00', // Saldo valores arqueo anterior - importe
-        '0.00', // Saldo valores arqueo anterior - saldo
-        this.showArqueo.TotalEntregado, // <--- Existencia actual - Cantidad
-        this.showArqueo.TotalEntregadoImporte.toFixed(2) // <--- Existencia actual - Importe
+        this.showArqueo.TotalEntregado, // <--- Valores entregados - Cantidad
+        this.showArqueo.ValorEntregado.toFixed(2), // <--- Valores entregados - Importe
+        this.showArqueo.ArqueoAnteriorCantidad, // Saldo valores arqueo anterior - importe
+        this.showArqueo.ArqueoAnteriorImporte.toFixed(2), // Saldo valores arqueo anterior - saldo
+        this.showArqueo.CantidadRestante, // <--- Existencia actual - Cantidad
+        this.showArqueo.TotalSobrante.toFixed(2) // <--- Existencia actual - Importe
       ]
     ];
-
-
 
     let finalYAfterTable = y;
 
@@ -304,9 +319,8 @@ export class ArqueoFondoUnicoComponent {
     doc.text('Importe Valores Anulados:', startX + 5, y + 28, { align: 'left' });
     doc.text(`$${0}`, startX + fullBoxWidth - 5, y + 28, { align: 'right' });
 
-    const totalADepositarCalculated = this.showArqueo.TotalEntregadoImporte;
     doc.text('Total a Depositar:', startX + 5, y + 33, { align: 'left' });
-    doc.text(`$${totalADepositarCalculated.toFixed(2)}`, startX + fullBoxWidth - 5, y + 33, { align: 'right' });
+    doc.text(`$${this.showArqueo.CantidadADepositar.toFixed(2)}`, startX + fullBoxWidth - 5, y + 33, { align: 'right' });
 
     y += boxHeight + spacing;
 
@@ -316,16 +330,16 @@ export class ArqueoFondoUnicoComponent {
     doc.text('Resumen de Totales y Diferencia', startX + 5, y + 8, { align: 'left' });
     doc.setFontSize(10);
     doc.text('Total a Depositar:', startX + 5, y + 18, { align: 'left' });
-    doc.text(`$${totalADepositarCalculated.toFixed(2)}`, startX + fullBoxWidth - 5, y + 18, { align: 'right' });
+    doc.text(`$${this.showArqueo.CantidadADepositar.toFixed(2)}`, startX + fullBoxWidth - 5, y + 18, { align: 'right' });
 
     doc.text('Total Depositado:', startX + 5, y + 24, { align: 'left' });
     doc.text(`$${this.showArqueo.TotalDepositos.toFixed(2)}`, startX + fullBoxWidth - 5, y + 24, { align: 'right' });
 
-    const diferencia = totalADepositarCalculated - this.showArqueo.TotalDepositos;
+    const diferencia = this.showArqueo.CantidadADepositar - this.showArqueo.TotalDepositos;
     doc.text('Diferencia:', startX + 5, y + 30, { align: 'left' });
     doc.text(`$${diferencia.toFixed(2)}`, startX + fullBoxWidth - 5, y + 30, { align: 'right' });
 
-      const pdfUrl = doc.output('bloburl');
+    const pdfUrl = doc.output('bloburl');
     window.open(pdfUrl, '_blank');
 
 

@@ -9,7 +9,7 @@ import { getFormularios } from '../../api/formulario.service';
 import { sendEntrega, getLastNumeroEntrega } from '../../api/entregas.service';
 import { getUnidades } from '../../api/unidades.service';
 import { UserService } from '../../api/user.service';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 
 import { getCantidadActual, setRegistroEntrega } from '../../api/entregas-registro.service'; // Importa la función getCantidadActual
 
@@ -118,11 +118,11 @@ export class AgregarEntregaComponent implements OnInit {
   @ViewChild('searchBox') searchBox!: ElementRef; // Referencia al input de búsqueda
 
   @HostListener('document:keydown', ['$event'])
-onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    this.mostrarOpciones = false;
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.mostrarOpciones = false;
+    }
   }
-}
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (this.searchBox && !this.searchBox.nativeElement.contains(event.target)) {
@@ -184,22 +184,22 @@ onKeydown(event: KeyboardEvent) {
       if (result.isConfirmed) {
         const formData = this.form.getRawValue(); // getRawValue() incluye los campos deshabilitados
         await sendEntrega(formData)
-        
 
-        for(const renglon of formData.renglonesEntregas) {
-          
-        const ultimoValor = await getCantidadActual(formData, renglon); // Llama a la función getCantidadActual con la fecha del formulario
-        
-        const RegistrarEntrega = {
-          Unidad: formData.Unidad,
-          Fecha: formData.Fecha,
-          TipoEntrega: renglon.TipoFormulario,
-          cantidadActual: renglon.Cantidad + ultimoValor, // Sumar la cantidad actual a la cantidad ingresada
+
+        for (const renglon of formData.renglonesEntregas) {
+          console.log(renglon)
+          const ultimoValor = await getCantidadActual(formData.Fecha, formData.Unidad, renglon.TipoFormulario); // Llama a la función getCantidadActual con la fecha del formulario
+
+          const RegistrarEntrega = {
+            Unidad: formData.Unidad,
+            Fecha: formData.Fecha,
+            TipoEntrega: renglon.TipoFormulario,
+            cantidadActual: renglon.Cantidad + ultimoValor, // Sumar la cantidad actual a la cantidad ingresada
+          }
+
+          await setRegistroEntrega(RegistrarEntrega); // Envía el objeto al backend
+
         }
-
-        await setRegistroEntrega(RegistrarEntrega); // Envía el objeto al backend
-
-      }
         Swal.fire({
           title: 'Entrega enviada',
           icon: 'success',
@@ -268,7 +268,7 @@ onKeydown(event: KeyboardEvent) {
     pdf.text('Firma Responsable de Entrega', 130, finalY + 5);
 
 
-  
+
     const pdfUrl = pdf.output('bloburl');
     window.open(pdfUrl, '_blank');
 

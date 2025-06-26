@@ -10,9 +10,9 @@ export const getEntregasRegistro = async (id: number) => {
     }
     }
 
-export const getCantidadActual = async (Data: any, renglon: any) => {
+export const getCantidadActual = async (fecha: Date, unidad: string, renglon: string) => {
     try {
-        const response = await axios.get(`/RegistroEntregas/CantidadActual/${Data.Fecha ? Data.Fecha : Data.Hasta}/${Data.Unidad}/${renglon.TipoFormulario ? renglon.TipoFormulario : Data.TipoFormulario}`);
+        const response = await axios.get(`/RegistroEntregas/CantidadActual/${fecha}/${unidad}/${renglon}`);
         return response.data;
 
     } catch (error) {

@@ -42,8 +42,8 @@
         }
       </select>
       <div class="flex flex-col w-full">
-        <span class="flex font-medium ml-4"> Cantidad utilizada </span>
-        <input formControlName="CantidadUtilizada" id="CantidadUtilizada" type="number" min="0"
+        <span class="flex font-medium ml-4"> Cantidad restante </span>
+        <input formControlName="CantidadRestante" id="CantidadRestante" type="number" min="0"
           class="border open-sans border-gray-300 rounded-md h-10 xl:h-8 2xl:h-10 my-2 xl:my-1 xl:m-2 m-4 pl-2" />
       </div>
       <!-- Agrega un botón -->
@@ -81,30 +81,61 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
+        <h1 class="text-lg font-bold">Detalles del Arqueo</h1>
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Desde</td>
+          <td class="px-6 py-4 whitespace-nowrap">Periodo</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            {{ showArqueo.Desde | date: 'dd/MM/yyyy' }}
+            {{ showArqueo.Desde | date: 'dd/MM/yyyy' }} - {{ showArqueo.Hasta | date: 'dd/MM/yyyy' }}
           </td>
         </tr>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Hasta</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            {{ showArqueo.Hasta | date: 'dd/MM/yyyy' }}
-          </td>
-        </tr>
-
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Unidad</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.Unidad }}</td>
         </tr>
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Total entregado</td>
+          <td class="px-6 py-4 whitespace-nowrap">Tipo de Formulario</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TipoDeFormulario }}</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Valor del formulario</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.ValorFormulario }}</td>
+        </tr>
+        <h1 class="text-lg font-bold">Valores Entregados</h1>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Cantidad</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalEntregado }}</td>
         </tr>
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Total sobrante</td>
+          <td class="px-6 py-4 whitespace-nowrap">Importe</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.ValorEntregado }}</td>
+        </tr>
+
+        <h1 class="text-lg font-bold">Saldo valores arqueo anterior</h1>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Cantidad</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.ArqueoAnteriorCantidad }}</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Importe </td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.ArqueoAnteriorImporte }}</td>
+        </tr>
+
+        <h1 class="text-lg font-bold">Existencia Actual</h1>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Cantidad</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.CantidadRestante }}</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Importe</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalSobrante }}</td>
+        </tr>
+        <h1 class="text-lg font-bold">Depósitos efectuados</h1>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Total a depositar</td>
+          <td [ngClass]="{
+            'bg-green-500': showArqueo.Coincidente,
+            'bg-red-500 text-white': !showArqueo.Coincidente
+            }" class="px-6 py-4 whitespace-nowrap">{{ showArqueo.CantidadADepositar }}</td>
         </tr>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">Total de depósitos</td>
@@ -114,23 +145,19 @@
             }" class="px-6 py-4 whitespace-nowrap">{{ showArqueo.TotalDepositos }}</td>
         </tr>
 
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap">Valor</td>
-          <td [ngClass]="{
-            'bg-green-500': showArqueo.Coincidente,
-            'bg-red-500 text-white': !showArqueo.Coincidente
-            }" class="px-6 py-4 whitespace-nowrap">{{ showArqueo.Valor }}</td>
-        </tr>
+
       </tbody>
     </table>
-     <button type="button" (click)="imprimirArqueo()"
-    class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2 mt-2">
-    Imprimir arqueo
-  </button>
-     <button type="button" (click)=" guardarArqueo()"
-    class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2 mt-2">
-    Guardar arqueo
-  </button>
+
+
+    <button type="button" (click)="imprimirArqueo()"
+      class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2 mt-2">
+      Imprimir arqueo
+    </button>
+    <button type="button" (click)=" guardarArqueo()"
+      class="cursor-pointer bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded w-full flex flex-row items-center justify-center mr-2 mt-2">
+      Guardar arqueo
+    </button>
   </div>
 </div>
 
