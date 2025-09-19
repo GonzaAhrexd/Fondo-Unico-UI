@@ -10,7 +10,7 @@ type verificacion = {
 }
 
 export const getVerificaciones = async (values: verificacion) => {
-    const response = await axios.get(`/Verificaciones/${values.Unidad}/${values.Fecha}/${values.Tipo ? (values.Tipo != '0' ? values.Tipo : 'no_ingresado')  : 'no_ingresado'}/${values.mostrarAnulados}`)
+    const response = await axios.get(`/Verificaciones/${values.Unidad ? values.Unidad : 'no_ingresado'}/${values.Fecha}/${values.Tipo ? (values.Tipo != '0' ? values.Tipo : 'no_ingresado')  : 'no_ingresado'}/${values.mostrarAnulados}`)
     console.log(response.data)
 
     return response.data
@@ -24,7 +24,7 @@ export const getVerificacionPorRecibo = async (recibo: string) => {
 }
 
 export const getVerificacionesRango = async (values: verificacion) => {
-    const response = await axios.get(`/Verificaciones/${values.Unidad}/${values.Desde}/${values.Hasta}/${values.Tipo ? (values.Tipo != '0' ? values.Tipo : 'no_ingresado')  : 'no_ingresado'}/${values.mostrarAnulados}`)
+    const response = await axios.get(`/Verificaciones/${values.Unidad ? values.Unidad : 'no_ingresado'}/${values.Desde}/${values.Hasta}/${values.Tipo ? (values.Tipo != '0' ? values.Tipo : 'no_ingresado')  : 'no_ingresado'}/${values.mostrarAnulados}`)
     console.log(response.data)
     return response.data
 }

@@ -24,6 +24,11 @@ export class BuscarVerificacionesComponent {
       header: () => 'Recibo',
       cell: info => info.getValue(),
     },
+     {
+      accessorKey: 'fecha',
+      header: () => 'Fecha',
+      cell: info => info.getValue(),
+    },
     {
       accessorKey: 'tipo',
       header: () => 'Tipo',
@@ -64,8 +69,19 @@ export class BuscarVerificacionesComponent {
       accessorKey: 'importe',
       header: () => 'Importe',
       cell: info => info.getValue(),
-    }
+    },
+     {
+      accessorKey: 'tipoPago',
+      header: () => 'Tipo de Pago',
+      cell: info => info.getValue(),
+    },
+   
   ]
+
+
+
+
+
   // Variables
   unidades: any = [
     { unidad: "Metropolitana"},
